@@ -1,0 +1,11 @@
+{
+  "period": "2026-07",
+  "weekdayDays": 22,
+  "holidayDays": 7,
+  "excluded": [
+    "2026-07-10",
+    "2026-07-11"
+  ],
+  "matchedStations": 3344,
+  "unmatchedStations": 0
+}
