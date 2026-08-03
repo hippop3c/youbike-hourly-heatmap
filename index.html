@@ -203,7 +203,7 @@
     }
 
     function popup(x,matched){
-      const rowsHtml=metrics.map((m,i)=>{const relay=m==='滿借'||m==='空還',value=Math.round(relay?x.totals[i]:x.vals[i]).toLocaleString();return `<span>${m}${relay?'（筆）':'（當月同時段最大輛）'}</span><span>${value}</span>`}).join('');
+      const rowsHtml=metrics.map((m,i)=>{const relay=m==='滿借'||m==='空還',value=Math.round(relay?x.totals[i]:x.vals[i]).toLocaleString();return `<span>${m}${relay?'（筆）':'（輛）'}</span><span>${value}</span>`}).join('');
       const catHtml=CATS.map(c=>{const value=x.cat?.[c.key]??catVal(c.kind==='relay'?x.totals:x.vals,c);return `${c.key} ${Math.round(value).toLocaleString()}${c.kind==='relay'?'筆':'輛'}`}).join('　');
       let casesHtml='';
       if(matched&&matched.length)casesHtml=`<div class="popup-cases">符合情境：${matched.map(c=>`<b style="background:${c.color}">${c.label.split('（')[0]}</b>`).join('')}</div>`;
