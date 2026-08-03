@@ -17,7 +17,7 @@
   <main class="app">
     <header class="toolbar">
       <div class="title-row">
-        <h1>雙北 YouBike 各站分時平均動態熱力圖</h1>
+        <h1>雙北 YouBike 各站分時動態熱力圖</h1>
         <div class="title-right">
           <div class="search-box">
             <input id="stationSearch" type="text" placeholder="搜尋站點名稱…" autocomplete="off" aria-label="搜尋站點">
@@ -39,7 +39,7 @@
     </header>
     <section class="map-wrap">
       <div id="map" role="application" aria-label="雙北 YouBike 分時熱力圖"></div>
-      <aside class="summary"><div id="selectionText"></div><div class="summary-values" id="summaryValues"></div><div class="summary-note" id="summaryNote">篩選站點每日平均次數合計</div></aside>
+      <aside class="summary"><div id="selectionText"></div><div class="summary-values" id="summaryValues"></div><div class="summary-note" id="summaryNote">民眾交易為筆數；調度為當月同時段最大車輛數</div></aside>
       <aside class="legend"><div class="legend-title" id="legendTitle">熱區強度</div><div id="legendRows"></div></aside>
     </section>
   </main>
@@ -76,7 +76,7 @@
       {bit:16,key:'c5', label:'⑤ 滿借．前/後1小時該站調出', color:'#0aa678'},
       {bit:32,key:'c6', label:'⑥ 空還．前/後1小時該站調入', color:'#d81159'}
     ];
-    const T=2.0, tD=0.5, R=300;   // 民眾訊號門檻 / 調度門檻(每日平均次數) / 鄰站半徑(公尺)
+    const T=2.0, tD=0.5, R=300;   // 民眾訊號門檻 / 調度門檻(當月同時段最大車輛數) / 鄰站半徑(公尺)
     const mI={滿借:metrics.indexOf('滿借'),空還:metrics.indexOf('空還'),調出:metrics.indexOf('調出'),綁車:metrics.indexOf('綁車'),調入:metrics.indexOf('調入'),解綁車:metrics.indexOf('解綁車')};
 
     // 每個日別的 station×hour×6 值表（供跨小時 case 判斷）
@@ -136,7 +136,10 @@
       const totalDays=days.reduce((a,d)=>a+(weights[d]||0),0)||1,byStation=new Map();
       for(const d of days){const bucket=D.values[d],dayCount=weights[d]||0;if(!bucket||!dayCount)continue;
         for(const row of bucket[+hour.value]){let target=byStation.get(row[0]);if(!target){target={average:[0,0,0,0,0,0],total:[0,0,0,0,0,0]};byStation.set(row[0],target)}
-          for(let i=0;i<6;i++){const total=row[i+1]*dayCount;target.total[i]+=total;target.average[i]+=total/totalDays;}
+          for(let i=0;i<6;i++){
+            if(i>=2){target.average[i]=Math.max(target.average[i],row[i+1]);target.total[i]=target.average[i];}
+            else{const total=row[i+1]*dayCount;target.total[i]+=total;target.average[i]+=total/totalDays;}
+          }
         }
       }
       return byStation;
@@ -184,14 +187,14 @@
         lr.insertAdjacentHTML('beforeend',`<div class="legend-empty">底圖熱區仍依「指標」呈現；同時符合多情境者以第一項顏色標示。判定門檻 T=${T}、鄰站 ≤${R}m、調度 ≥${tD}。</div>`);
         el('selectionText').innerHTML=`<b class="case-summary">情境篩選 ${caseKeys.length} 種｜命中 ${hitCount} 站</b><br>${days.join('+')||'未選日別'}・${String(h).padStart(2,'0')}時`;
       } else {
-        el('summaryNote').textContent='友愛接力為該小時交易筆數；調度為每日平均車輛數';
+        el('summaryNote').textContent='友愛接力為該小時交易筆數；調度為當月同時段最大車輛數';
         const sv=el('summaryValues');sv.innerHTML='';
         if(selCats.length===0)sv.innerHTML='<span style="grid-column:1/4;color:#5b7280">未選擇指標</span>';
-        else for(const c of selCats){const tot=rows.reduce((a,x)=>a+x.cat[c.key],0),shown=c.kind==='relay'?Math.round(tot).toLocaleString():tot.toFixed(2);sv.insertAdjacentHTML('beforeend',`<span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><span class="v" style="color:${c.ring}">${shown}</span>`);}
+        else for(const c of selCats){const tot=rows.reduce((a,x)=>a+x.cat[c.key],0),shown=Math.round(tot).toLocaleString();sv.insertAdjacentHTML('beforeend',`<span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><span class="v" style="color:${c.ring}">${shown}</span>`);}
         el('legendTitle').textContent='熱區強度';
         const lr=el('legendRows');lr.innerHTML='';
         if(selCats.length===0)lr.innerHTML='<div class="legend-empty">未選擇指標</div>';
-        else for(const c of selCats){const shown=c.kind==='relay'?Math.round(c._max||0):(c._max||0).toFixed(2);lr.insertAdjacentHTML('beforeend',`<div class="legend-row"><span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><div class="gradient" style="background:${c.gcss}"></div><span>${shown}</span></div>`);}
+        else for(const c of selCats){const shown=Math.round(c._max||0).toLocaleString();lr.insertAdjacentHTML('beforeend',`<div class="legend-row"><span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><div class="gradient" style="background:${c.gcss}"></div><span>${shown}</span></div>`);}
         el('selectionText').textContent=`${days.join('+')||'未選日別'}・${String(h).padStart(2,'0')}時・${rows.length.toLocaleString()}站`;
       }
       el('hourValue').textContent=String(h).padStart(2,'0')+':00';
@@ -200,8 +203,8 @@
     }
 
     function popup(x,matched){
-      const rowsHtml=metrics.map((m,i)=>{const relay=m==='滿借'||m==='空還',value=relay?Math.round(x.totals[i]).toLocaleString():x.vals[i].toFixed(2);return `<span>${m}${relay?'（筆）':'（平均輛）'}</span><span>${value}</span>`}).join('');
-      const catHtml=CATS.map(c=>{const value=x.cat?.[c.key]??catVal(c.kind==='relay'?x.totals:x.vals,c);return `${c.key} ${c.kind==='relay'?Math.round(value).toLocaleString()+'筆':value.toFixed(2)+'輛'}`}).join('　');
+      const rowsHtml=metrics.map((m,i)=>{const relay=m==='滿借'||m==='空還',value=Math.round(relay?x.totals[i]:x.vals[i]).toLocaleString();return `<span>${m}${relay?'（筆）':'（當月同時段最大輛）'}</span><span>${value}</span>`}).join('');
+      const catHtml=CATS.map(c=>{const value=x.cat?.[c.key]??catVal(c.kind==='relay'?x.totals:x.vals,c);return `${c.key} ${Math.round(value).toLocaleString()}${c.kind==='relay'?'筆':'輛'}`}).join('　');
       let casesHtml='';
       if(matched&&matched.length)casesHtml=`<div class="popup-cases">符合情境：${matched.map(c=>`<b style="background:${c.color}">${c.label.split('（')[0]}</b>`).join('')}</div>`;
       return `<div class="popup-title">${x.s[0]}</div><div>${x.s[1]}・${x.s[2]}・${String(+hour.value).padStart(2,'0')}:00</div><div class="popup-grid">${rowsHtml}</div><div class="popup-cat">${catHtml}</div>${casesHtml}`;
