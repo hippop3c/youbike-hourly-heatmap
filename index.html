@@ -39,7 +39,7 @@
     </header>
     <section class="map-wrap">
       <div id="map" role="application" aria-label="雙北 YouBike 分時熱力圖"></div>
-      <aside class="summary"><div id="selectionText"></div><div class="summary-values" id="summaryValues"></div><div class="summary-note" id="summaryNote">民眾交易為筆數；調度為當月同時段最大車輛數</div></aside>
+      <aside class="summary"><div id="selectionText"></div><div class="summary-values" id="summaryValues"></div><div class="summary-note" id="summaryNote">民眾交易為筆數；調度為車輛數</div></aside>
       <aside class="legend"><div class="legend-title" id="legendTitle">熱區強度</div><div id="legendRows"></div></aside>
     </section>
   </main>
@@ -187,7 +187,7 @@
         lr.insertAdjacentHTML('beforeend',`<div class="legend-empty">底圖熱區仍依「指標」呈現；同時符合多情境者以第一項顏色標示。判定門檻 T=${T}、鄰站 ≤${R}m、調度 ≥${tD}。</div>`);
         el('selectionText').innerHTML=`<b class="case-summary">情境篩選 ${caseKeys.length} 種｜命中 ${hitCount} 站</b><br>${days.join('+')||'未選日別'}・${String(h).padStart(2,'0')}時`;
       } else {
-        el('summaryNote').textContent='友愛接力為該小時交易筆數；調度為當月同時段最大車輛數';
+        el('summaryNote').textContent='友愛接力為該小時交易筆數；調度為車輛數';
         const sv=el('summaryValues');sv.innerHTML='';
         if(selCats.length===0)sv.innerHTML='<span style="grid-column:1/4;color:#5b7280">未選擇指標</span>';
         else for(const c of selCats){const tot=rows.reduce((a,x)=>a+x.cat[c.key],0),shown=Math.round(tot).toLocaleString();sv.insertAdjacentHTML('beforeend',`<span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><span class="v" style="color:${c.ring}">${shown}</span>`);}
