@@ -59,10 +59,10 @@
 
     // ── 指標四類（調度的綁車/解綁車伴隨調出/調入）──
     const CATS=[
-      {key:'滿借',members:['滿借'],fill:'#f4a261',ring:'#c1440e',grad:{.18:'#ffe6a0',.55:'#f4a261',1:'#d62828'},gcss:'linear-gradient(90deg,#ffe6a0,#f4a261,#d62828)'},
-      {key:'空還',members:['空還'],fill:'#74c69d',ring:'#1b7d4f',grad:{.18:'#d8f3dc',.55:'#52b788',1:'#1b7d4f'},gcss:'linear-gradient(90deg,#d8f3dc,#52b788,#1b7d4f)'},
-      {key:'調出／綁車',members:['調出','綁車'],fill:'#4ea8de',ring:'#274c9c',grad:{.18:'#cfe8ff',.55:'#4ea8de',1:'#3155a6'},gcss:'linear-gradient(90deg,#cfe8ff,#4ea8de,#3155a6)'},
-      {key:'調入／解綁車',members:['調入','解綁車'],fill:'#b57edc',ring:'#6a189e',grad:{.18:'#ede0ff',.55:'#9d4edd',1:'#6a189e'},gcss:'linear-gradient(90deg,#ede0ff,#9d4edd,#6a189e)'}
+      {key:'滿借',kind:'relay',members:['滿借'],fill:'#f4a261',ring:'#c1440e',grad:{.18:'#ffe6a0',.55:'#f4a261',1:'#d62828'},gcss:'linear-gradient(90deg,#ffe6a0,#f4a261,#d62828)'},
+      {key:'空還',kind:'relay',members:['空還'],fill:'#74c69d',ring:'#1b7d4f',grad:{.18:'#d8f3dc',.55:'#52b788',1:'#1b7d4f'},gcss:'linear-gradient(90deg,#d8f3dc,#52b788,#1b7d4f)'},
+      {key:'調出／綁車',kind:'dispatch',members:['調出','綁車'],fill:'#4ea8de',ring:'#274c9c',grad:{.18:'#cfe8ff',.55:'#4ea8de',1:'#3155a6'},gcss:'linear-gradient(90deg,#cfe8ff,#4ea8de,#3155a6)'},
+      {key:'調入／解綁車',kind:'dispatch',members:['調入','解綁車'],fill:'#b57edc',ring:'#6a189e',grad:{.18:'#ede0ff',.55:'#9d4edd',1:'#6a189e'},gcss:'linear-gradient(90deg,#ede0ff,#9d4edd,#6a189e)'}
     ];
     for(const c of CATS)c.idx=c.members.map(m=>metrics.indexOf(m)).filter(i=>i>=0);
     const DEFAULT=new Set(['滿借','調出／綁車']);
@@ -114,7 +114,14 @@
     const map=L.map('map',{preferCanvas:true}).setView([25.06,121.54],11);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
     for(const c of CATS)c.layer=L.heatLayer([],{radius:24,blur:19,maxZoom:16,gradient:c.grad}).addTo(map);
-    const markers=L.layerGroup().addTo(map);
+    // 固定圖標層級：調度在下、友愛接力在上；調度圈較大，重疊時仍看得到外圈。
+    for(const [name,z] of [['neutralPane',440],['dispatchPane',450],['relayPane',460],['casePane',470],['searchPane',480]]){
+      map.createPane(name);map.getPane(name).style.zIndex=z;
+    }
+    const neutralMarkers=L.layerGroup().addTo(map);
+    const dispatchMarkers=L.layerGroup().addTo(map);
+    const relayMarkers=L.layerGroup().addTo(map);
+    const caseMarkers=L.layerGroup().addTo(map);
     const searchLayer=L.layerGroup().addTo(map);
     let timer=null;
 
@@ -124,9 +131,19 @@
     function refreshDistricts(){const cities=checked('cityOptions'),box=el('districtOptions'),previous=new Set(checked('districtOptions'));box.innerHTML='';const values=[...new Set(stations.filter(s=>cities.length===0||cities.includes(s[1])).map(s=>s[2]))].sort((a,b)=>a.localeCompare(b,'zh-Hant'));for(const value of values){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.value=value;input.checked=previous.size===0||previous.has(value);input.onchange=render;label.append(input,document.createTextNode(value));box.appendChild(label)}optionActions(box,render);updateLabels()}
     function updateLabels(){const days=checked('dayOptions'),cities=checked('cityOptions'),districts=checked('districtOptions'),sel=checked('metricOptions'),cs=checked('caseOptions');setSummary('daySummary',days,'全部日別');setSummary('citySummary',cities,'雙北全部');el('districtSummary').textContent=districts.length===0?'未選擇':districts.length===el('districtOptions').querySelectorAll('input[type=checkbox]').length?'全部行政區':districts.length>3?`${districts.length}區已選`:districts.join('、');setSummary('metricSummary',sel,'全部指標');el('caseSummary').textContent=cs.length===0?'關閉':`${cs.length}種情境`;}
 
-    function combinedRows(){const days=checked('dayOptions'),weights={平日:22,假日:7},totalDays=days.reduce((a,d)=>a+(weights[d]||0),0)||1,byStation=new Map();for(const d of days){const bucket=D.values[d];if(!bucket)continue;for(const row of bucket[+hour.value]){let target=byStation.get(row[0]);if(!target){target=[0,0,0,0,0,0];byStation.set(row[0],target)}for(let i=0;i<6;i++)target[i]+=row[i+1]*weights[d]/totalDays}}return byStation}
+    function combinedRows(){
+      const days=checked('dayOptions'),weights={平日:D.meta.weekdayDays||22,假日:D.meta.holidayDays||7};
+      const totalDays=days.reduce((a,d)=>a+(weights[d]||0),0)||1,byStation=new Map();
+      for(const d of days){const bucket=D.values[d],dayCount=weights[d]||0;if(!bucket||!dayCount)continue;
+        for(const row of bucket[+hour.value]){let target=byStation.get(row[0]);if(!target){target={average:[0,0,0,0,0,0],total:[0,0,0,0,0,0]};byStation.set(row[0],target)}
+          for(let i=0;i<6;i++){const total=row[i+1]*dayCount;target.total[i]+=total;target.average[i]+=total/totalDays;}
+        }
+      }
+      return byStation;
+    }
     function percentile(values){const v=values.filter(x=>x>0).sort((a,b)=>a-b);return v.length?Math.max(.01,v[Math.min(v.length-1,Math.floor(v.length*.95))]):1}
     const catVal=(vals,c)=>c.idx.reduce((a,i)=>a+vals[i],0);
+    const visualStrength=(value,max)=>max?Math.sqrt(Math.min(1,value/max)):0;
 
     function render(){
       updateLabels();
@@ -134,10 +151,20 @@
       const selCats=CATS.filter(c=>selKeys.includes(c.key)),lookup=combinedRows(),h=+hour.value;
       const caseActive=caseKeys.length>0, selBit=CASES.filter(c=>caseKeys.includes(c.key)).reduce((a,c)=>a|c.bit,0);
       const inFilter=s=>(cities.length===0||cities.includes(s[1]))&&(districts.length===0||districts.includes(s[2]));
-      const rows=stations.map((s,i)=>{const vals=lookup.get(i)||[0,0,0,0,0,0];const cat={};for(const c of CATS)cat[c.key]=catVal(vals,c);return{s,i,vals,cat};}).filter(x=>inFilter(x.s));
+      const rows=stations.map((s,i)=>{const data=lookup.get(i)||{average:[0,0,0,0,0,0],total:[0,0,0,0,0,0]},cat={};for(const c of CATS)cat[c.key]=catVal(c.kind==='relay'?data.total:data.average,c);return{s,i,vals:data.average,totals:data.total,cat};}).filter(x=>inFilter(x.s));
       // 指標熱區（永遠依指標選擇呈現，作為背景脈絡）
-      for(const c of CATS){if(selKeys.includes(c.key)){c._max=percentile(rows.map(x=>x.cat[c.key]));c.layer.setLatLngs(rows.filter(x=>x.cat[c.key]>0).map(x=>[x.s[3],x.s[4],Math.min(1,x.cat[c.key]/c._max)]));}else{c._max=0;c.layer.setLatLngs([]);}}
-      markers.clearLayers();
+      for(const c of CATS){if(selKeys.includes(c.key)){c._max=percentile(rows.map(x=>x.cat[c.key]));c.layer.setLatLngs(rows.filter(x=>x.cat[c.key]>0).map(x=>[x.s[3],x.s[4],visualStrength(x.cat[c.key],c._max)]));}else{c._max=0;c.layer.setLatLngs([]);}}
+      neutralMarkers.clearLayers();dispatchMarkers.clearLayers();relayMarkers.clearLayers();caseMarkers.clearLayers();
+
+      // 每個已選指標各自保留圖標；調度圈固定在下層且略大，數值同時控制半徑、框線與透明度。
+      for(const x of rows){let visible=false;
+        for(const c of selCats){const value=x.cat[c.key];if(value<=0)continue;visible=true;const n=visualStrength(value,c._max),isDispatch=c.kind==='dispatch';
+          const radius=isDispatch?7.5+3*n+(c.key.startsWith('調出')?.6:0):3.5+3.5*n+(c.key==='滿借'?.35:0);
+          const marker=L.circleMarker([x.s[3],x.s[4]],{pane:isDispatch?'dispatchPane':'relayPane',radius,color:c.ring,weight:isDispatch?1.2+1.8*n:.9+1.2*n,fillColor:c.fill,fillOpacity:isDispatch?.18+.38*n:.28+.58*n,dashArray:c.key.startsWith('調入')?'4 2':null}).bindPopup(popup(x));
+          marker.addTo(isDispatch?dispatchMarkers:relayMarkers);
+        }
+        if(!visible)L.circleMarker([x.s[3],x.s[4]],{pane:'neutralPane',radius:2,color:'#708894',weight:1,fillOpacity:.15}).bindPopup(popup(x)).addTo(neutralMarkers);
+      }
 
       if(caseActive){
         const bits=classify(days,h);
@@ -146,7 +173,7 @@
           const b=bits[x.i]&selBit;if(!b)continue;hitCount++;
           const matched=CASES.filter(c=>b&c.bit);for(const c of matched)perCase[c.bit]++;
           const col=matched[0].color;
-          L.circleMarker([x.s[3],x.s[4]],{radius:7,color:'#0b3954',weight:1.4,fillColor:col,fillOpacity:.85}).bindPopup(popup(x,matched)).addTo(markers);
+          L.circleMarker([x.s[3],x.s[4]],{pane:'casePane',radius:5.8,color:'#0b3954',weight:1.4,fillColor:col,fillOpacity:.85}).bindPopup(popup(x,matched)).addTo(caseMarkers);
         }
         el('summaryNote').textContent='符合情境的站點數（依當下小時、日別）';
         const sv=el('summaryValues');sv.innerHTML='';
@@ -157,20 +184,14 @@
         lr.insertAdjacentHTML('beforeend',`<div class="legend-empty">底圖熱區仍依「指標」呈現；同時符合多情境者以第一項顏色標示。判定門檻 T=${T}、鄰站 ≤${R}m、調度 ≥${tD}。</div>`);
         el('selectionText').innerHTML=`<b class="case-summary">情境篩選 ${caseKeys.length} 種｜命中 ${hitCount} 站</b><br>${days.join('+')||'未選日別'}・${String(h).padStart(2,'0')}時`;
       } else {
-        for(const x of rows){
-          let best=null,bestNorm=0;
-          for(const c of selCats){const n=c._max?x.cat[c.key]/c._max:0;if(x.cat[c.key]>0&&n>=bestNorm){bestNorm=n;best=c;}}
-          if(best)L.circleMarker([x.s[3],x.s[4]],{radius:Math.min(9,3+5*bestNorm),color:best.ring,weight:1,fillColor:best.fill,fillOpacity:.68}).bindPopup(popup(x)).addTo(markers);
-          else L.circleMarker([x.s[3],x.s[4]],{radius:2,color:'#708894',weight:1,fillOpacity:.15}).bindPopup(popup(x)).addTo(markers);
-        }
-        el('summaryNote').textContent='篩選站點每日平均次數合計';
+        el('summaryNote').textContent='友愛接力為該小時交易筆數；調度為每日平均車輛數';
         const sv=el('summaryValues');sv.innerHTML='';
         if(selCats.length===0)sv.innerHTML='<span style="grid-column:1/4;color:#5b7280">未選擇指標</span>';
-        else for(const c of selCats){const tot=rows.reduce((a,x)=>a+x.cat[c.key],0);sv.insertAdjacentHTML('beforeend',`<span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><span class="v" style="color:${c.ring}">${tot.toFixed(2)}</span>`);}
+        else for(const c of selCats){const tot=rows.reduce((a,x)=>a+x.cat[c.key],0),shown=c.kind==='relay'?Math.round(tot).toLocaleString():tot.toFixed(2);sv.insertAdjacentHTML('beforeend',`<span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><span class="v" style="color:${c.ring}">${shown}</span>`);}
         el('legendTitle').textContent='熱區強度';
         const lr=el('legendRows');lr.innerHTML='';
         if(selCats.length===0)lr.innerHTML='<div class="legend-empty">未選擇指標</div>';
-        else for(const c of selCats)lr.insertAdjacentHTML('beforeend',`<div class="legend-row"><span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><div class="gradient" style="background:${c.gcss}"></div><span>${(c._max||0).toFixed(2)}</span></div>`);
+        else for(const c of selCats){const shown=c.kind==='relay'?Math.round(c._max||0):(c._max||0).toFixed(2);lr.insertAdjacentHTML('beforeend',`<div class="legend-row"><span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><div class="gradient" style="background:${c.gcss}"></div><span>${shown}</span></div>`);}
         el('selectionText').textContent=`${days.join('+')||'未選日別'}・${String(h).padStart(2,'0')}時・${rows.length.toLocaleString()}站`;
       }
       el('hourValue').textContent=String(h).padStart(2,'0')+':00';
@@ -179,15 +200,15 @@
     }
 
     function popup(x,matched){
-      const rowsHtml=metrics.map((m,i)=>`<span>${m}</span><span>${x.vals[i].toFixed(2)}</span>`).join('');
-      const catHtml=CATS.map(c=>`${c.key} ${catVal(x.vals,c).toFixed(2)}`).join('　');
+      const rowsHtml=metrics.map((m,i)=>{const relay=m==='滿借'||m==='空還',value=relay?Math.round(x.totals[i]).toLocaleString():x.vals[i].toFixed(2);return `<span>${m}${relay?'（筆）':'（平均輛）'}</span><span>${value}</span>`}).join('');
+      const catHtml=CATS.map(c=>{const value=x.cat?.[c.key]??catVal(c.kind==='relay'?x.totals:x.vals,c);return `${c.key} ${c.kind==='relay'?Math.round(value).toLocaleString()+'筆':value.toFixed(2)+'輛'}`}).join('　');
       let casesHtml='';
       if(matched&&matched.length)casesHtml=`<div class="popup-cases">符合情境：${matched.map(c=>`<b style="background:${c.color}">${c.label.split('（')[0]}</b>`).join('')}</div>`;
       return `<div class="popup-title">${x.s[0]}</div><div>${x.s[1]}・${x.s[2]}・${String(+hour.value).padStart(2,'0')}:00</div><div class="popup-grid">${rowsHtml}</div><div class="popup-cat">${catHtml}</div>${casesHtml}`;
     }
 
     // ── 站點搜尋：飛到該站並高亮（點擊高亮圈看資訊卡）──
-    function locate(i){const s=stations[i],vals=combinedRows().get(i)||[0,0,0,0,0,0];searchLayer.clearLayers();L.circleMarker([s[3],s[4]],{radius:13,color:'#0b3954',weight:3,fillColor:'#ffd166',fillOpacity:.5}).bindPopup(popup({s,i,vals})).addTo(searchLayer);map.flyTo([s[3],s[4]],17,{duration:.6});closeSearch();}
+    function locate(i){const s=stations[i],data=combinedRows().get(i)||{average:[0,0,0,0,0,0],total:[0,0,0,0,0,0]};searchLayer.clearLayers();L.circleMarker([s[3],s[4]],{pane:'searchPane',radius:13,color:'#0b3954',weight:3,fillColor:'#ffd166',fillOpacity:.5}).bindPopup(popup({s,i,vals:data.average,totals:data.total})).addTo(searchLayer);map.flyTo([s[3],s[4]],17,{duration:.6});closeSearch();}
     function closeSearch(){el('searchList').classList.remove('open');}
     function runSearch(){const q=el('stationSearch').value.trim(),list=el('searchList');el('searchClear').classList.toggle('show',q.length>0);if(!q){list.innerHTML='';closeSearch();return;}const norm=t=>t.toLowerCase().replace(/[\s()（）]/g,'');const nq=norm(q);const hits=[];for(let i=0;i<stations.length&&hits.length<40;i++){if(norm(stations[i][0]).includes(nq))hits.push(i);}if(hits.length===0){list.innerHTML='<div class="search-empty">找不到符合的站點</div>';list.classList.add('open');return;}list.innerHTML=hits.slice(0,20).map((i,k)=>`<div class="search-item${k===0?' active':''}" data-i="${i}"><b>${stations[i][0]}</b><small>${stations[i][1]}・${stations[i][2]}</small></div>`).join('');list.classList.add('open');list.querySelectorAll('.search-item').forEach(item=>item.onclick=()=>locate(+item.dataset.i));}
     el('stationSearch').addEventListener('input',runSearch);
