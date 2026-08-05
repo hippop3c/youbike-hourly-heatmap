@@ -6,10 +6,10 @@
   <title>雙北 YouBike 分時熱力圖</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
-    :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#17324d;background:#eef4f7}*{box-sizing:border-box}body{margin:0}.app{display:grid;grid-template-rows:auto 1fr;height:100vh}.toolbar{background:#0b3954;color:#fff;padding:12px 16px;box-shadow:0 2px 8px #0003;z-index:1000}.title-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:10px}.title-row h1{font-size:20px;margin:0}.title-right{display:flex;align-items:center;gap:14px}.status{font-size:13px;color:#cdeaf2;white-space:nowrap}.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(146px,1fr));gap:10px;align-items:end}.control{display:flex;flex-direction:column;gap:4px;position:relative}.control>label{font-size:12px;color:#cdeaf2}.multi summary,.control button{height:36px;border:1px solid #8ab7c5;border-radius:6px;background:#fff;color:#17324d;padding:8px 10px;cursor:pointer;list-style:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.multi summary::-webkit-details-marker{display:none}.multi summary:after{content:'▾';float:right}.multi[open] summary:after{content:'▴'}.options{position:absolute;top:40px;left:0;min-width:220px;max-height:280px;overflow:auto;background:#fff;color:#17324d;border:1px solid #8ab7c5;border-radius:8px;box-shadow:0 6px 20px #0004;padding:8px;z-index:1200}.options label{display:flex;align-items:center;gap:8px;padding:5px;border-radius:4px}.options label:hover{background:#e8f4f5}.option-actions{display:flex;gap:6px;position:sticky;top:-8px;background:#fff;padding:4px 0 7px}.option-actions button{height:28px;padding:2px 8px;border:1px solid #aacbd4;border-radius:4px;background:#eef7f8;color:#17324d}.cat-swatch{display:inline-block;width:11px;height:11px;border-radius:3px;flex:0 0 auto}.case-summary{color:#0b3954}.hour-wrap{display:flex;align-items:center;gap:8px;height:36px}.hour-wrap input{min-width:80px;width:100%}.hour-value{min-width:52px;font-variant-numeric:tabular-nums;font-weight:700}.play{background:#f4a261!important;border-color:#f4a261!important;font-weight:700}
+    :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#17324d;background:#eef4f7}*{box-sizing:border-box}body{margin:0}.app{display:grid;grid-template-rows:auto 1fr;height:100vh}.toolbar{position:relative;background:#0b3954;color:#fff;padding:12px 16px;box-shadow:0 2px 8px #0003;z-index:2000}.title-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:10px}.title-row h1{font-size:20px;margin:0}.title-right{display:flex;align-items:center;gap:14px}.status{font-size:13px;color:#cdeaf2;white-space:nowrap}.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(146px,1fr));gap:10px;align-items:end}.control{display:flex;flex-direction:column;gap:4px;position:relative}.control>label{font-size:12px;color:#cdeaf2}.multi summary,.control button{height:36px;border:1px solid #8ab7c5;border-radius:6px;background:#fff;color:#17324d;padding:8px 10px;cursor:pointer;list-style:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.multi summary::-webkit-details-marker{display:none}.multi summary:after{content:'▾';float:right}.multi[open] summary:after{content:'▴'}.options{position:absolute;top:40px;left:0;min-width:220px;max-height:280px;overflow:auto;background:#fff;color:#17324d;border:1px solid #8ab7c5;border-radius:8px;box-shadow:0 6px 20px #0004;padding:8px;z-index:2200}.options label{display:flex;align-items:center;gap:8px;padding:5px;border-radius:4px}.options label:hover{background:#e8f4f5}.option-actions{display:flex;gap:6px;position:sticky;top:-8px;background:#fff;padding:4px 0 7px}.option-actions button{height:28px;padding:2px 8px;border:1px solid #aacbd4;border-radius:4px;background:#eef7f8;color:#17324d}.cat-swatch{display:inline-block;width:11px;height:11px;border-radius:3px;flex:0 0 auto}.case-summary{color:#0b3954}.hour-wrap{display:flex;align-items:center;gap:8px;height:36px}.hour-wrap input{min-width:80px;width:100%}.hour-value{min-width:52px;font-variant-numeric:tabular-nums;font-weight:700}.play{background:#f4a261!important;border-color:#f4a261!important;font-weight:700}
     .search-box{position:relative}.search-box input{height:34px;width:230px;max-width:48vw;border:1px solid #8ab7c5;border-radius:6px;padding:6px 32px 6px 10px;font-size:14px;color:#17324d}.search-clear{position:absolute;right:6px;top:6px;width:22px;height:22px;border:none;border-radius:50%;background:#dce9ee;color:#0b3954;cursor:pointer;font-size:14px;line-height:1;display:none}.search-clear.show{display:block}.search-list{position:absolute;top:38px;right:0;left:0;background:#fff;color:#17324d;border:1px solid #8ab7c5;border-radius:8px;box-shadow:0 6px 20px #0004;max-height:300px;overflow:auto;z-index:1400;display:none}.search-list.open{display:block}.search-item{padding:7px 10px;cursor:pointer;font-size:13px;border-bottom:1px solid #eef4f7}.search-item:last-child{border-bottom:none}.search-item:hover,.search-item.active{background:#e8f4f5}.search-item b{font-weight:700}.search-item small{color:#5b7280;margin-left:6px}.search-empty{padding:9px 10px;color:#5b7280;font-size:13px}
-    .map-wrap{position:relative;min-height:0}#map{height:100%;width:100%}.legend{position:absolute;right:12px;bottom:28px;z-index:800;background:#fff;padding:10px 12px;border-radius:8px;box-shadow:0 2px 12px #0003;min-width:215px;max-width:290px}.legend-row{display:grid;grid-template-columns:16px auto 1fr 40px;gap:6px;align-items:center;font-size:12px;margin-top:6px}.legend-row.case{grid-template-columns:16px 1fr}.legend-empty{font-size:11px;color:#5b7280;margin-top:7px;line-height:1.5}.gradient{height:10px;border-radius:5px}.legend-title{font-weight:700}.summary{position:absolute;left:12px;bottom:28px;z-index:800;background:#fff;padding:10px 12px;border-radius:8px;box-shadow:0 2px 12px #0003;font-size:13px;min-width:215px;max-width:300px}.summary-values{display:grid;grid-template-columns:16px auto 1fr;gap:4px 8px;margin-top:6px;align-items:center}.summary-values .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}.summary-note{margin-top:6px;color:#5b7280;font-size:12px}.leaflet-popup-content{line-height:1.55}.popup-title{font-weight:700;font-size:15px}.popup-grid{display:grid;grid-template-columns:auto auto;gap:2px 12px;margin-top:6px}.popup-grid span:nth-child(even){text-align:right;font-variant-numeric:tabular-nums}.popup-cat{color:#5b7280;grid-column:1/3;margin-top:5px;font-size:12px;border-top:1px solid #e4edf1;padding-top:4px}.popup-cases{grid-column:1/3;margin-top:5px;font-size:12px;border-top:1px solid #e4edf1;padding-top:5px}.popup-cases b{display:inline-block;color:#fff;border-radius:4px;padding:1px 6px;margin:2px 3px 0 0;font-weight:600}
-    @media(max-width:980px){.app{height:auto;min-height:100vh}.map-wrap{height:72vh}.title-row{align-items:stretch;flex-direction:column}.title-right{flex-direction:column;align-items:stretch}.search-box input{width:100%;max-width:none}}
+    .map-wrap{position:relative;min-height:0}#map{height:100%;width:100%}.legend{position:absolute;right:12px;bottom:28px;z-index:800;background:#fff;padding:10px 12px;border-radius:8px;box-shadow:0 2px 12px #0003;min-width:215px;max-width:300px}.legend-row{display:grid;grid-template-columns:16px auto 1fr 52px;gap:6px;align-items:center;font-size:12px;margin-top:6px}.legend-row.case{grid-template-columns:16px 1fr}.legend-empty{font-size:11px;color:#5b7280;margin-top:7px;line-height:1.5}.gradient{height:10px;border-radius:5px}.legend-title{font-weight:700}.summary{position:absolute;left:12px;bottom:28px;z-index:800;background:#fff;padding:10px 12px;border-radius:8px;box-shadow:0 2px 12px #0003;font-size:13px;min-width:215px;max-width:300px}.summary-values{display:grid;grid-template-columns:16px auto 1fr;gap:4px 8px;margin-top:6px;align-items:center}.summary-values .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}.summary-note{margin-top:6px;color:#5b7280;font-size:12px}.leaflet-popup-content{line-height:1.55}.popup-title{font-weight:700;font-size:15px}.popup-grid{display:grid;grid-template-columns:auto auto;gap:2px 12px;margin-top:6px}.popup-grid span:nth-child(even){text-align:right;font-variant-numeric:tabular-nums}.popup-cat{color:#5b7280;grid-column:1/3;margin-top:5px;font-size:12px;border-top:1px solid #e4edf1;padding-top:4px}.popup-cases{grid-column:1/3;margin-top:5px;font-size:12px;border-top:1px solid #e4edf1;padding-top:5px}.popup-cases b{display:inline-block;color:#fff;border-radius:4px;padding:1px 6px;margin:2px 3px 0 0;font-weight:600}
+    @media(max-width:980px){.app{height:auto;min-height:100vh}.map-wrap{height:72vh}.title-row{align-items:stretch;flex-direction:column}.title-right{flex-direction:column;align-items:stretch}.status{white-space:normal;line-height:1.4}.search-box input{width:100%;max-width:none}}
     @media(max-width:600px){.title-row h1{font-size:17px}.summary{left:8px;top:8px;bottom:auto}.legend{right:8px;bottom:12px}}
   </style>
 </head>
@@ -39,7 +39,7 @@
     </header>
     <section class="map-wrap">
       <div id="map" role="application" aria-label="雙北 YouBike 分時熱力圖"></div>
-      <aside class="summary"><div id="selectionText"></div><div class="summary-values" id="summaryValues"></div><div class="summary-note" id="summaryNote">民眾交易為筆數；調度為車輛數</div></aside>
+      <aside class="summary"><div id="selectionText"></div><div class="summary-values" id="summaryValues"></div><div class="summary-note" id="summaryNote">交易為筆數；調度為車輛數；見車／見位率為有資料站平均</div></aside>
       <aside class="legend"><div class="legend-title" id="legendTitle">熱區強度</div><div id="legendRows"></div></aside>
     </section>
   </main>
@@ -57,12 +57,14 @@
     }
     const stations=D.stations, metrics=D.metrics, N=stations.length;
 
-    // ── 指標四類（調度的綁車/解綁車伴隨調出/調入）──
+    // ── 指標六類（調度的綁車/解綁車伴隨調出/調入；見車／見位率各自獨立）──
     const CATS=[
       {key:'滿借',kind:'relay',members:['滿借'],fill:'#f4a261',ring:'#c1440e',grad:{.18:'#ffe6a0',.55:'#f4a261',1:'#d62828'},gcss:'linear-gradient(90deg,#ffe6a0,#f4a261,#d62828)'},
       {key:'空還',kind:'relay',members:['空還'],fill:'#74c69d',ring:'#1b7d4f',grad:{.18:'#d8f3dc',.55:'#52b788',1:'#1b7d4f'},gcss:'linear-gradient(90deg,#d8f3dc,#52b788,#1b7d4f)'},
       {key:'調出／綁車',kind:'dispatch',members:['調出','綁車'],fill:'#4ea8de',ring:'#274c9c',grad:{.18:'#cfe8ff',.55:'#4ea8de',1:'#3155a6'},gcss:'linear-gradient(90deg,#cfe8ff,#4ea8de,#3155a6)'},
-      {key:'調入／解綁車',kind:'dispatch',members:['調入','解綁車'],fill:'#b57edc',ring:'#6a189e',grad:{.18:'#ede0ff',.55:'#9d4edd',1:'#6a189e'},gcss:'linear-gradient(90deg,#ede0ff,#9d4edd,#6a189e)'}
+      {key:'調入／解綁車',kind:'dispatch',members:['調入','解綁車'],fill:'#b57edc',ring:'#6a189e',grad:{.18:'#ede0ff',.55:'#9d4edd',1:'#6a189e'},gcss:'linear-gradient(90deg,#ede0ff,#9d4edd,#6a189e)'},
+      {key:'見車率',kind:'rate',members:['見車率'],fill:'#f72585',ring:'#9d174d',grad:{.18:'#ffd6e8',.55:'#f72585',1:'#9d174d'},gcss:'linear-gradient(90deg,#ffd6e8,#f72585,#9d174d)'},
+      {key:'見位率',kind:'rate',members:['見位率'],fill:'#00b4d8',ring:'#006d8f',grad:{.18:'#caf0f8',.55:'#00b4d8',1:'#006d8f'},gcss:'linear-gradient(90deg,#caf0f8,#00b4d8,#006d8f)'}
     ];
     for(const c of CATS)c.idx=c.members.map(m=>metrics.indexOf(m)).filter(i=>i>=0);
     const DEFAULT=new Set(['滿借','調出／綁車']);
@@ -79,10 +81,16 @@
     const T=2.0, tD=0.5, R=300;   // 民眾訊號門檻 / 調度門檻(當月同時段最大車輛數) / 鄰站半徑(公尺)
     const mI={滿借:metrics.indexOf('滿借'),空還:metrics.indexOf('空還'),調出:metrics.indexOf('調出'),綁車:metrics.indexOf('綁車'),調入:metrics.indexOf('調入'),解綁車:metrics.indexOf('解綁車')};
 
-    // 每個日別的 station×hour×6 值表（供跨小時 case 判斷）
+    const RATE_METRICS=new Set(['見車率','見位率']);
+    const RELAY_METRICS=new Set(['滿借','空還']);
+    const DISPATCH_METRICS=new Set(['調出','綁車','調入','解綁車']);
+    const isRateIndex=i=>RATE_METRICS.has(metrics[i]);
+    const blankValues=()=>metrics.map((_,i)=>isRateIndex(i)?null:0);
+
+    // 每個日別的 station×hour×metrics 值表；情境判定只讀既有前六項。
     const HD={};
     for(const day of Object.keys(D.values)){
-      const H=Array.from({length:N},()=>Array.from({length:24},()=>[0,0,0,0,0,0]));
+      const H=Array.from({length:N},()=>Array.from({length:24},blankValues));
       for(let h=0;h<24;h++)for(const r of D.values[day][h])H[r[0]][h]=r.slice(1);
       HD[day]=H;
     }
@@ -115,12 +123,13 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
     for(const c of CATS)c.layer=L.heatLayer([],{radius:24,blur:19,maxZoom:16,gradient:c.grad}).addTo(map);
     // 固定圖標層級：調度在下、友愛接力在上；調度圈較大，重疊時仍看得到外圈。
-    for(const [name,z] of [['neutralPane',440],['dispatchPane',450],['relayPane',460],['casePane',470],['searchPane',480]]){
+    for(const [name,z] of [['neutralPane',440],['dispatchPane',450],['relayPane',460],['ratePane',465],['casePane',470],['searchPane',480]]){
       map.createPane(name);map.getPane(name).style.zIndex=z;
     }
     const neutralMarkers=L.layerGroup().addTo(map);
     const dispatchMarkers=L.layerGroup().addTo(map);
     const relayMarkers=L.layerGroup().addTo(map);
+    const rateMarkers=L.layerGroup().addTo(map);
     const caseMarkers=L.layerGroup().addTo(map);
     const searchLayer=L.layerGroup().addTo(map);
     let timer=null;
@@ -132,20 +141,35 @@
     function updateLabels(){const days=checked('dayOptions'),cities=checked('cityOptions'),districts=checked('districtOptions'),sel=checked('metricOptions'),cs=checked('caseOptions');setSummary('daySummary',days,'全部日別');setSummary('citySummary',cities,'雙北全部');el('districtSummary').textContent=districts.length===0?'未選擇':districts.length===el('districtOptions').querySelectorAll('input[type=checkbox]').length?'全部行政區':districts.length>3?`${districts.length}區已選`:districts.join('、');setSummary('metricSummary',sel,'全部指標');el('caseSummary').textContent=cs.length===0?'關閉':`${cs.length}種情境`;}
 
     function combinedRows(){
-      const days=checked('dayOptions'),weights={平日:D.meta.weekdayDays||22,假日:D.meta.holidayDays||7};
-      const totalDays=days.reduce((a,d)=>a+(weights[d]||0),0)||1,byStation=new Map();
-      for(const d of days){const bucket=D.values[d],dayCount=weights[d]||0;if(!bucket||!dayCount)continue;
-        for(const row of bucket[+hour.value]){let target=byStation.get(row[0]);if(!target){target={average:[0,0,0,0,0,0],total:[0,0,0,0,0,0]};byStation.set(row[0],target)}
-          for(let i=0;i<6;i++){
-            if(i>=2){target.average[i]=Math.max(target.average[i],row[i+1]);target.total[i]=target.average[i];}
-            else{const total=row[i+1]*dayCount;target.total[i]+=total;target.average[i]+=total/totalDays;}
+      const days=checked('dayOptions');
+      const legacyWeights={平日:D.meta.weekdayDays||22,假日:D.meta.holidayDays||7};
+      const usage=D.meta.usageFrequency||{};
+      const rateWeights={平日:usage.weekdayDays||22,假日:usage.holidayDays||6};
+      const legacyTotalDays=days.reduce((a,d)=>a+(legacyWeights[d]||0),0)||1,byStation=new Map();
+      for(const d of days){const bucket=D.values[d],legacyDayCount=legacyWeights[d]||0,rateDayCount=rateWeights[d]||0;if(!bucket)continue;
+        for(const row of bucket[+hour.value]){let target=byStation.get(row[0]);if(!target){target={average:blankValues(),total:blankValues(),rateSum:Array(metrics.length).fill(0),rateWeight:Array(metrics.length).fill(0)};byStation.set(row[0],target)}
+          for(let i=0;i<metrics.length;i++){
+            const value=row[i+1];
+            if(isRateIndex(i)){
+              if(Number.isFinite(value)&&rateDayCount){target.rateSum[i]+=value*rateDayCount;target.rateWeight[i]+=rateDayCount;}
+            }else if(DISPATCH_METRICS.has(metrics[i])){
+              if(Number.isFinite(value)){target.average[i]=Math.max(target.average[i],value);target.total[i]=target.average[i];}
+            }else if(RELAY_METRICS.has(metrics[i])&&legacyDayCount&&Number.isFinite(value)){
+              const total=value*legacyDayCount;target.total[i]+=total;target.average[i]+=total/legacyTotalDays;
+            }else if(Number.isFinite(value)){
+              target.average[i]=value;target.total[i]=value;
+            }
           }
         }
+      }
+      for(const target of byStation.values())for(let i=0;i<metrics.length;i++)if(isRateIndex(i)){
+        target.average[i]=target.rateWeight[i]?target.rateSum[i]/target.rateWeight[i]:null;
+        target.total[i]=target.average[i];
       }
       return byStation;
     }
     function percentile(values){const v=values.filter(x=>x>0).sort((a,b)=>a-b);return v.length?Math.max(.01,v[Math.min(v.length-1,Math.floor(v.length*.95))]):1}
-    const catVal=(vals,c)=>c.idx.reduce((a,i)=>a+vals[i],0);
+    const catVal=(vals,c)=>{const present=c.idx.map(i=>vals[i]).filter(Number.isFinite);return c.kind==='rate'?(present.length?present.reduce((a,v)=>a+v,0)/present.length:null):present.reduce((a,v)=>a+v,0)};
     const visualStrength=(value,max)=>max?Math.sqrt(Math.min(1,value/max)):0;
 
     function render(){
@@ -154,17 +178,18 @@
       const selCats=CATS.filter(c=>selKeys.includes(c.key)),lookup=combinedRows(),h=+hour.value;
       const caseActive=caseKeys.length>0, selBit=CASES.filter(c=>caseKeys.includes(c.key)).reduce((a,c)=>a|c.bit,0);
       const inFilter=s=>(cities.length===0||cities.includes(s[1]))&&(districts.length===0||districts.includes(s[2]));
-      const rows=stations.map((s,i)=>{const data=lookup.get(i)||{average:[0,0,0,0,0,0],total:[0,0,0,0,0,0]},cat={};for(const c of CATS)cat[c.key]=catVal(c.kind==='relay'?data.total:data.average,c);return{s,i,vals:data.average,totals:data.total,cat};}).filter(x=>inFilter(x.s));
+      const rows=stations.map((s,i)=>{const data=lookup.get(i)||{average:blankValues(),total:blankValues()},cat={};for(const c of CATS)cat[c.key]=catVal(c.kind==='relay'?data.total:data.average,c);return{s,i,vals:data.average,totals:data.total,cat};}).filter(x=>inFilter(x.s));
       // 指標熱區（永遠依指標選擇呈現，作為背景脈絡）
-      for(const c of CATS){if(selKeys.includes(c.key)){c._max=percentile(rows.map(x=>x.cat[c.key]));c.layer.setLatLngs(rows.filter(x=>x.cat[c.key]>0).map(x=>[x.s[3],x.s[4],visualStrength(x.cat[c.key],c._max)]));}else{c._max=0;c.layer.setLatLngs([]);}}
-      neutralMarkers.clearLayers();dispatchMarkers.clearLayers();relayMarkers.clearLayers();caseMarkers.clearLayers();
+      for(const c of CATS){if(selKeys.includes(c.key)){c._max=percentile(rows.map(x=>x.cat[c.key]));c.layer.setLatLngs(rows.filter(x=>Number.isFinite(x.cat[c.key])&&x.cat[c.key]>0).map(x=>[x.s[3],x.s[4],visualStrength(x.cat[c.key],c._max)]));}else{c._max=0;c.layer.setLatLngs([]);}}
+      neutralMarkers.clearLayers();dispatchMarkers.clearLayers();relayMarkers.clearLayers();rateMarkers.clearLayers();caseMarkers.clearLayers();
 
       // 每個已選指標各自保留圖標；調度圈固定在下層且略大，數值同時控制半徑、框線與透明度。
       for(const x of rows){let visible=false;
-        for(const c of selCats){const value=x.cat[c.key];if(value<=0)continue;visible=true;const n=visualStrength(value,c._max),isDispatch=c.kind==='dispatch';
-          const radius=isDispatch?7.5+3*n+(c.key.startsWith('調出')?.6:0):3.5+3.5*n+(c.key==='滿借'?.35:0);
-          const marker=L.circleMarker([x.s[3],x.s[4]],{pane:isDispatch?'dispatchPane':'relayPane',radius,color:c.ring,weight:isDispatch?1.2+1.8*n:.9+1.2*n,fillColor:c.fill,fillOpacity:isDispatch?.18+.38*n:.28+.58*n,dashArray:c.key.startsWith('調入')?'4 2':null}).bindPopup(popup(x));
-          marker.addTo(isDispatch?dispatchMarkers:relayMarkers);
+        for(const c of selCats){const value=x.cat[c.key],isRate=c.kind==='rate';if(!Number.isFinite(value)||(isRate?false:value<=0))continue;visible=true;const n=visualStrength(value,c._max),isDispatch=c.kind==='dispatch';
+          const radius=isDispatch?7.5+3*n+(c.key.startsWith('調出')?.6:0):isRate?4+3.5*n:3.5+3.5*n+(c.key==='滿借'?.35:0);
+          const pane=isDispatch?'dispatchPane':isRate?'ratePane':'relayPane';
+          const marker=L.circleMarker([x.s[3],x.s[4]],{pane,radius,color:c.ring,weight:isDispatch?1.2+1.8*n:isRate?1.1+1.4*n:.9+1.2*n,fillColor:c.fill,fillOpacity:isDispatch?.18+.38*n:isRate?.22+.56*n:.28+.58*n,dashArray:c.key.startsWith('調入')?'4 2':null}).bindPopup(popup(x));
+          marker.addTo(isDispatch?dispatchMarkers:isRate?rateMarkers:relayMarkers);
         }
         if(!visible)L.circleMarker([x.s[3],x.s[4]],{pane:'neutralPane',radius:2,color:'#708894',weight:1,fillOpacity:.15}).bindPopup(popup(x)).addTo(neutralMarkers);
       }
@@ -187,31 +212,33 @@
         lr.insertAdjacentHTML('beforeend',`<div class="legend-empty">底圖熱區仍依「指標」呈現；同時符合多情境者以第一項顏色標示。判定門檻 T=${T}、鄰站 ≤${R}m、調度 ≥${tD}。</div>`);
         el('selectionText').innerHTML=`<b class="case-summary">情境篩選 ${caseKeys.length} 種｜命中 ${hitCount} 站</b><br>${days.join('+')||'未選日別'}・${String(h).padStart(2,'0')}時`;
       } else {
-        el('summaryNote').textContent='友愛接力為該小時交易筆數；調度為車輛數';
+        el('summaryNote').textContent='交易為筆數；調度為車輛數；見車／見位率為有資料站平均';
         const sv=el('summaryValues');sv.innerHTML='';
         if(selCats.length===0)sv.innerHTML='<span style="grid-column:1/4;color:#5b7280">未選擇指標</span>';
-        else for(const c of selCats){const tot=rows.reduce((a,x)=>a+x.cat[c.key],0),shown=Math.round(tot).toLocaleString();sv.insertAdjacentHTML('beforeend',`<span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><span class="v" style="color:${c.ring}">${shown}</span>`);}
+        else for(const c of selCats){const values=rows.map(x=>x.cat[c.key]).filter(Number.isFinite),shown=c.kind==='rate'?(values.length?`${(values.reduce((a,v)=>a+v,0)/values.length).toFixed(1)}%`:'—'):Math.round(values.reduce((a,v)=>a+v,0)).toLocaleString();sv.insertAdjacentHTML('beforeend',`<span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><span class="v" style="color:${c.ring}">${shown}</span>`);}
         el('legendTitle').textContent='熱區強度';
         const lr=el('legendRows');lr.innerHTML='';
         if(selCats.length===0)lr.innerHTML='<div class="legend-empty">未選擇指標</div>';
-        else for(const c of selCats){const shown=Math.round(c._max||0).toLocaleString();lr.insertAdjacentHTML('beforeend',`<div class="legend-row"><span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><div class="gradient" style="background:${c.gcss}"></div><span>${shown}</span></div>`);}
+        else for(const c of selCats){const shown=c.kind==='rate'?`${(c._max||0).toFixed(1)}%`:Math.round(c._max||0).toLocaleString();lr.insertAdjacentHTML('beforeend',`<div class="legend-row"><span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><div class="gradient" style="background:${c.gcss}"></div><span>${shown}</span></div>`);}
         el('selectionText').textContent=`${days.join('+')||'未選日別'}・${String(h).padStart(2,'0')}時・${rows.length.toLocaleString()}站`;
       }
       el('hourValue').textContent=String(h).padStart(2,'0')+':00';
-      const exc=(D.meta.excluded||[]).map(d=>d.slice(5)).join('、');
-      el('status').textContent=`2026年7月｜${D.meta.matchedStations.toLocaleString()}站${exc?`｜排除 ${exc}`:''}`;
+      const legacyExc=(D.meta.excluded||[]).map(d=>d.slice(5)).join('、');
+      const usageExc=((D.meta.usageFrequency||{}).excluded||[]).map(d=>d.slice(5));
+      const usageText=usageExc.join(',')==='07-10,07-11,07-12'?'07-10～07-12':usageExc.join('、');
+      el('status').textContent=`2026年7月｜${N.toLocaleString()}站${usageText?`｜見車見位率排除 ${usageText}`:''}${legacyExc?`｜滿借空還排除 ${legacyExc}`:''}`;
     }
 
     function popup(x,matched){
-      const rowsHtml=metrics.map((m,i)=>{const relay=m==='滿借'||m==='空還',value=Math.round(relay?x.totals[i]:x.vals[i]).toLocaleString();return `<span>${m}${relay?'（筆）':'(輛)'}</span><span>${value}</span>`}).join('');
-      const catHtml=CATS.map(c=>{const value=x.cat?.[c.key]??catVal(c.kind==='relay'?x.totals:x.vals,c);return `${c.key} ${Math.round(value).toLocaleString()}${c.kind==='relay'?'筆':'輛'}`}).join('　');
+      const rowsHtml=metrics.map((m,i)=>{const relay=m==='滿借'||m==='空還',rate=isRateIndex(i),raw=relay?x.totals[i]:x.vals[i],value=rate?(Number.isFinite(raw)?`${raw.toFixed(1)}%`:'—'):Math.round(Number.isFinite(raw)?raw:0).toLocaleString(),unit=rate?'':relay?'（筆）':'（輛）';return `<span>${m}${unit}</span><span>${value}</span>`}).join('');
+      const catHtml=CATS.map(c=>{const value=x.cat?.[c.key]??catVal(c.kind==='relay'?x.totals:x.vals,c),shown=c.kind==='rate'?(Number.isFinite(value)?`${value.toFixed(1)}%`:'—'):`${Math.round(Number.isFinite(value)?value:0).toLocaleString()}${c.kind==='relay'?'筆':'輛'}`;return `${c.key} ${shown}`}).join('　');
       let casesHtml='';
       if(matched&&matched.length)casesHtml=`<div class="popup-cases">符合情境：${matched.map(c=>`<b style="background:${c.color}">${c.label.split('（')[0]}</b>`).join('')}</div>`;
       return `<div class="popup-title">${x.s[0]}</div><div>${x.s[1]}・${x.s[2]}・${String(+hour.value).padStart(2,'0')}:00</div><div class="popup-grid">${rowsHtml}</div><div class="popup-cat">${catHtml}</div>${casesHtml}`;
     }
 
     // ── 站點搜尋：飛到該站並高亮（點擊高亮圈看資訊卡）──
-    function locate(i){const s=stations[i],data=combinedRows().get(i)||{average:[0,0,0,0,0,0],total:[0,0,0,0,0,0]};searchLayer.clearLayers();L.circleMarker([s[3],s[4]],{pane:'searchPane',radius:13,color:'#0b3954',weight:3,fillColor:'#ffd166',fillOpacity:.5}).bindPopup(popup({s,i,vals:data.average,totals:data.total})).addTo(searchLayer);map.flyTo([s[3],s[4]],17,{duration:.6});closeSearch();}
+    function locate(i){const s=stations[i],data=combinedRows().get(i)||{average:blankValues(),total:blankValues()};searchLayer.clearLayers();L.circleMarker([s[3],s[4]],{pane:'searchPane',radius:13,color:'#0b3954',weight:3,fillColor:'#ffd166',fillOpacity:.5}).bindPopup(popup({s,i,vals:data.average,totals:data.total})).addTo(searchLayer);map.flyTo([s[3],s[4]],17,{duration:.6});closeSearch();}
     function closeSearch(){el('searchList').classList.remove('open');}
     function runSearch(){const q=el('stationSearch').value.trim(),list=el('searchList');el('searchClear').classList.toggle('show',q.length>0);if(!q){list.innerHTML='';closeSearch();return;}const norm=t=>t.toLowerCase().replace(/[\s()（）]/g,'');const nq=norm(q);const hits=[];for(let i=0;i<stations.length&&hits.length<40;i++){if(norm(stations[i][0]).includes(nq))hits.push(i);}if(hits.length===0){list.innerHTML='<div class="search-empty">找不到符合的站點</div>';list.classList.add('open');return;}list.innerHTML=hits.slice(0,20).map((i,k)=>`<div class="search-item${k===0?' active':''}" data-i="${i}"><b>${stations[i][0]}</b><small>${stations[i][1]}・${stations[i][2]}</small></div>`).join('');list.classList.add('open');list.querySelectorAll('.search-item').forEach(item=>item.onclick=()=>locate(+item.dataset.i));}
     el('stationSearch').addEventListener('input',runSearch);

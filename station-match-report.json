@@ -1,0 +1,353 @@
+{
+  "period": "2026-07",
+  "excluded": [
+    "2026-07-10",
+    "2026-07-11",
+    "2026-07-12"
+  ],
+  "sources": [
+    {
+      "file": "report_taipei_2026-07.json",
+      "sha256": "4eb1e677b160f8867b31e489c800852402478b65af89fdbdb7fbd2162d93da7f",
+      "bytes": 51417278,
+      "inputRows": 101214,
+      "includedRows": 97730,
+      "excludedRows": 3484,
+      "outsidePeriodRows": 0
+    },
+    {
+      "file": "report_newtaipei_2026-07.json",
+      "sha256": "3f40b6edfb64c26e066349fe672e729c5eca0e9b40726a733817d9b22ab80e1c",
+      "bytes": 45521572,
+      "inputRows": 90294,
+      "includedRows": 87194,
+      "excludedRows": 3100,
+      "outsidePeriodRows": 0
+    }
+  ],
+  "stationBasicSource": {
+    "file": "cps_station_basic_export.xlsx",
+    "sha256": "1afd8c1c15c865d12b27bb22df28b799b4e499b4b05fe716e158ea2521d8e574",
+    "bytes": 385642,
+    "rows": 3525,
+    "duplicateExactCityNameKeys": 7
+  },
+  "mappingMethod": "stored-s_no-or-unique-exact-report-city-name-validated-against-station-basic",
+  "fuzzyMatchingUsed": false,
+  "stationBasicIdentityVerified": true,
+  "mapStationCount": 3345,
+  "reportStationCount": 3327,
+  "matchedStationCount": 3327,
+  "unmatchedMapStationCount": 18,
+  "reportOnlyStationCount": 0,
+  "reportOnlyBeforeAppendCount": 1,
+  "appendedStationCount": 1,
+  "appendedSnos": [
+    "500213003"
+  ],
+  "districtMismatchCount": 4,
+  "coordinateMismatchCount": 3,
+  "appendedStations": [
+    {
+      "stationIndex": 3344,
+      "s_no": "500213003",
+      "city": "新北市",
+      "district": "平溪區",
+      "name": "平溪市民活動中心",
+      "latitude": 25.02484,
+      "longitude": 121.7372,
+      "stationStatus": "暫停"
+    }
+  ],
+  "unmatchedMapStations": [
+    {
+      "stationIndex": 294,
+      "city": "台北市",
+      "name": "濟南紹興路口",
+      "mapDistrict": "中正區",
+      "storedSno": "500106044",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 728,
+      "city": "台北市",
+      "name": "懷德建民路口",
+      "mapDistrict": "北投區",
+      "storedSno": "500109136",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 784,
+      "city": "台北市",
+      "name": "石牌公園",
+      "mapDistrict": "北投區",
+      "storedSno": "500109138",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 934,
+      "city": "台北市",
+      "name": "洲美維護所",
+      "mapDistrict": "台北維調區",
+      "storedSno": "500199014",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 935,
+      "city": "台北市",
+      "name": "濱江第二放置場",
+      "mapDistrict": "台北維調區",
+      "storedSno": "500199001",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 936,
+      "city": "台北市",
+      "name": "瑞光維護所",
+      "mapDistrict": "台北維調區",
+      "storedSno": "500199015",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 937,
+      "city": "台北市",
+      "name": "臨時存放區02",
+      "mapDistrict": "台北維調區",
+      "storedSno": "500199005",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 938,
+      "city": "台北市",
+      "name": "蘆洲維修中心",
+      "mapDistrict": "台北維調區",
+      "storedSno": "500199002",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 939,
+      "city": "台北市",
+      "name": "遺失車協尋01",
+      "mapDistrict": "台北維調區",
+      "storedSno": "500199009",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 1142,
+      "city": "台北市",
+      "name": "樹德公園",
+      "mapDistrict": "大同區",
+      "storedSno": "500103006",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 1943,
+      "city": "新北市",
+      "name": "新北市立圖書館三重分館",
+      "mapDistrict": "三重區",
+      "storedSno": "500203056",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 2127,
+      "city": "新北市",
+      "name": "新五路二段299號",
+      "mapDistrict": "五股區",
+      "storedSno": "500209028",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 2278,
+      "city": "新北市",
+      "name": "和平維護所",
+      "mapDistrict": "新北維調區",
+      "storedSno": "500299001",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 2279,
+      "city": "新北市",
+      "name": "新店維護所",
+      "mapDistrict": "新北維調區",
+      "storedSno": "500299003",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 2280,
+      "city": "新北市",
+      "name": "新莊維護所",
+      "mapDistrict": "新北維調區",
+      "storedSno": "500299005",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 2281,
+      "city": "新北市",
+      "name": "板橋客服中心",
+      "mapDistrict": "新北維調區",
+      "storedSno": "500299010",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 2282,
+      "city": "新北市",
+      "name": "汐止維護所",
+      "mapDistrict": "新北維調區",
+      "storedSno": "500299004",
+      "reason": "stored-s_no-not-present-in-current-report"
+    },
+    {
+      "stationIndex": 2283,
+      "city": "新北市",
+      "name": "蘆洲維護所(調度)",
+      "mapDistrict": "新北維調區",
+      "storedSno": "500299002",
+      "reason": "stored-s_no-not-present-in-current-report"
+    }
+  ],
+  "reportOnlyStations": [],
+  "districtMismatches": [
+    {
+      "stationIndex": 3190,
+      "city": "新北市",
+      "name": "牡丹車站",
+      "mapDistrict": "猴雙公共自行車專區",
+      "s_no": "500232001",
+      "reportDistricts": [
+        "雙溪區"
+      ],
+      "basicDistrict": "雙溪區",
+      "mapCoordinate": [
+        25.0,
+        121.8
+      ],
+      "basicCoordinate": [
+        25.0590226,
+        121.8518644
+      ],
+      "coordinateDifferenceDegrees": 0.078572153
+    },
+    {
+      "stationIndex": 3191,
+      "city": "新北市",
+      "name": "猴硐火車站",
+      "mapDistrict": "猴雙公共自行車專區",
+      "s_no": "500226007",
+      "reportDistricts": [
+        "瑞芳區"
+      ],
+      "basicDistrict": "瑞芳區",
+      "mapCoordinate": [
+        25.11,
+        122.0
+      ],
+      "basicCoordinate": [
+        25.08647,
+        121.82719
+      ],
+      "coordinateDifferenceDegrees": 0.174404578
+    },
+    {
+      "stationIndex": 3192,
+      "city": "新北市",
+      "name": "雙溪車站",
+      "mapDistrict": "猴雙公共自行車專區",
+      "s_no": "500232002",
+      "reportDistricts": [
+        "雙溪區"
+      ],
+      "basicDistrict": "雙溪區",
+      "mapCoordinate": [
+        25.03,
+        121.8
+      ],
+      "basicCoordinate": [
+        25.03914,
+        121.8665
+      ],
+      "coordinateDifferenceDegrees": 0.067125179
+    },
+    {
+      "stationIndex": 3231,
+      "city": "新北市",
+      "name": "幸福路678巷口",
+      "mapDistrict": "蘆洲區",
+      "s_no": "500229122",
+      "reportDistricts": [
+        "新莊區"
+      ],
+      "basicDistrict": "新莊區",
+      "mapCoordinate": [
+        25.0492,
+        121.45063
+      ],
+      "basicCoordinate": [
+        25.0492,
+        121.45063
+      ],
+      "coordinateDifferenceDegrees": 0.0
+    }
+  ],
+  "coordinateMismatches": [
+    {
+      "stationIndex": 3190,
+      "city": "新北市",
+      "name": "牡丹車站",
+      "mapDistrict": "猴雙公共自行車專區",
+      "s_no": "500232001",
+      "reportDistricts": [
+        "雙溪區"
+      ],
+      "basicDistrict": "雙溪區",
+      "mapCoordinate": [
+        25.0,
+        121.8
+      ],
+      "basicCoordinate": [
+        25.0590226,
+        121.8518644
+      ],
+      "coordinateDifferenceDegrees": 0.078572153
+    },
+    {
+      "stationIndex": 3191,
+      "city": "新北市",
+      "name": "猴硐火車站",
+      "mapDistrict": "猴雙公共自行車專區",
+      "s_no": "500226007",
+      "reportDistricts": [
+        "瑞芳區"
+      ],
+      "basicDistrict": "瑞芳區",
+      "mapCoordinate": [
+        25.11,
+        122.0
+      ],
+      "basicCoordinate": [
+        25.08647,
+        121.82719
+      ],
+      "coordinateDifferenceDegrees": 0.174404578
+    },
+    {
+      "stationIndex": 3192,
+      "city": "新北市",
+      "name": "雙溪車站",
+      "mapDistrict": "猴雙公共自行車專區",
+      "s_no": "500232002",
+      "reportDistricts": [
+        "雙溪區"
+      ],
+      "basicDistrict": "雙溪區",
+      "mapCoordinate": [
+        25.03,
+        121.8
+      ],
+      "basicCoordinate": [
+        25.03914,
+        121.8665
+      ],
+      "coordinateDifferenceDegrees": 0.067125179
+    }
+  ]
+}

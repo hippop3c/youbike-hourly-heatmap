@@ -1,11 +1,102 @@
 {
-  "period": "2026-07",
-  "weekdayDays": 22,
-  "holidayDays": 7,
-  "excluded": [
-    "2026-07-10",
-    "2026-07-11"
-  ],
-  "matchedStations": 3344,
-  "unmatchedStations": 0
+  "legacy": {
+    "period": "2026-07",
+    "weekdayDays": 22,
+    "holidayDays": 7,
+    "excluded": [
+      "2026-07-10",
+      "2026-07-11"
+    ],
+    "matchedStations": 3344,
+    "unmatchedStations": 0
+  },
+  "usageFrequency": {
+    "period": "2026-07",
+    "weekdayDays": 22,
+    "holidayDays": 6,
+    "excluded": [
+      "2026-07-10",
+      "2026-07-11",
+      "2026-07-12"
+    ],
+    "metrics": [
+      "見車率",
+      "見位率"
+    ],
+    "aggregation": "arithmetic-mean-by-station-day-type-hour-status",
+    "observationDenominator": "available-report-days",
+    "scale": "percent-0-100",
+    "precision": 2,
+    "includedDateCount": 28,
+    "includedRowsByStatus": {
+      "見位率": 92462,
+      "見車率": 92462
+    },
+    "sources": [
+      {
+        "file": "report_taipei_2026-07.json",
+        "sha256": "4eb1e677b160f8867b31e489c800852402478b65af89fdbdb7fbd2162d93da7f",
+        "bytes": 51417278,
+        "inputRows": 101214,
+        "includedRows": 97730,
+        "excludedRows": 3484,
+        "outsidePeriodRows": 0
+      },
+      {
+        "file": "report_newtaipei_2026-07.json",
+        "sha256": "3f40b6edfb64c26e066349fe672e729c5eca0e9b40726a733817d9b22ab80e1c",
+        "bytes": 45521572,
+        "inputRows": 90294,
+        "includedRows": 87194,
+        "excludedRows": 3100,
+        "outsidePeriodRows": 0
+      }
+    ],
+    "stationBasicSource": {
+      "file": "cps_station_basic_export.xlsx",
+      "sha256": "1afd8c1c15c865d12b27bb22df28b799b4e499b4b05fe716e158ea2521d8e574",
+      "bytes": 385642,
+      "rows": 3525,
+      "duplicateExactCityNameKeys": 7
+    },
+    "matching": {
+      "method": "stored-s_no-or-unique-exact-report-city-name-validated-against-station-basic",
+      "fuzzyMatchingUsed": false,
+      "stationBasicIdentityVerified": true,
+      "mapStationCount": 3345,
+      "reportStationCount": 3327,
+      "matchedStationCount": 3327,
+      "unmatchedMapStationCount": 18,
+      "reportOnlyBeforeAppendCount": 1,
+      "appendedStationCount": 1,
+      "appendedSnos": [
+        "500213003"
+      ],
+      "reportOnlyStationCount": 0,
+      "districtMismatchCount": 4,
+      "coordinateMismatchCount": 3
+    },
+    "observationCounts": {
+      "平日": {
+        "見車率": {
+          "minimum": 1,
+          "maximum": 22
+        },
+        "見位率": {
+          "minimum": 1,
+          "maximum": 22
+        }
+      },
+      "假日": {
+        "見車率": {
+          "minimum": 2,
+          "maximum": 6
+        },
+        "見位率": {
+          "minimum": 2,
+          "maximum": 6
+        }
+      }
+    }
+  }
 }
