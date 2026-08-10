@@ -241,7 +241,7 @@
       neutralMarkers.clearLayers();dispatchMarkers.clearLayers();relayMarkers.clearLayers();rateMarkers.clearLayers();matrixMarkers.clearLayers();
 
       if(useMatrixColors){
-        for(const x of rows){const result=matrixClassify(x,h);L.circleMarker([x.s[3],x.s[4]],{pane:'matrixPane',radius:7.4,color:'#0b3954',weight:1.35,fillColor:result.color,fillOpacity:.9}).bindPopup(popup(x),popupOptions()).addTo(matrixMarkers);}
+        for(const x of rows){const result=matrixClassify(x,h);L.circleMarker([x.s[3],x.s[4]],{pane:'matrixPane',radius:9,color:'#0b3954',weight:1.35,fillColor:result.color,fillOpacity:.9}).bindPopup(popup(x),popupOptions()).addTo(matrixMarkers);}
         el('summaryNote').textContent='各顏色場站數與左側表格同步，拖動小時會即時重算';
         const sv=el('summaryValues');sv.innerHTML='';
         for(const key of ['doubleHigh','adjust','maintain','infrastructure','combined','missing']){const style=MATRIX_STYLES[key],count=matrixSummary.byStyle[key]||0,label=style.summaryLabel||style.label;sv.insertAdjacentHTML('beforeend',`<span class="cat-swatch" style="background:${style.color}"></span><span>${label}</span><span class="v" style="color:${style.color}">${count.toLocaleString()}</span>`);}
