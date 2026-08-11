@@ -98,5 +98,63 @@
         }
       }
     }
+  },
+  "timeResolution": {
+    "displayMinutes": 30,
+    "slotCount": 48,
+    "eventMinutes": 30,
+    "dispatchMinutes": 30,
+    "rateMinutes": 60,
+    "rateSlotMapping": "floor(slot/2)"
+  },
+  "halfHourActivity": {
+    "metrics": [
+      "滿借",
+      "空還",
+      "調出",
+      "綁車",
+      "調入",
+      "解綁車"
+    ],
+    "event": {
+      "sourceFiles": 44,
+      "sourceRows": 894041,
+      "duplicateRows": 15196,
+      "uniqueOrders": 878845,
+      "includedEvents": {
+        "滿借": 197850,
+        "空還": 662846
+      },
+      "excludedDates": [
+        "2026-07-10",
+        "2026-07-11"
+      ],
+      "aggregation": "event-count-per-station-day-type-half-hour-divided-by-calendar-days",
+      "denominators": {
+        "平日": 22,
+        "假日": 7
+      }
+    },
+    "dispatch": {
+      "sourceFiles": [
+        "vds_task_taipei_2026-07.xlsx",
+        "vds_task_newtaipei_2026-07.xlsx"
+      ],
+      "sourceRows": 219872,
+      "matchedRows": 210745,
+      "unmatchedStations": 0,
+      "aggregation": "monthly-maximum-vehicles-per-station-day-type-half-hour-action",
+      "excludedDates": []
+    },
+    "sourceHourlyParity": {
+      "eventMismatches": 0,
+      "dispatchMismatches": 0
+    },
+    "serializedHourlyComparison": {
+      "eventRoundedPairMismatchCells": 17844,
+      "eventMaximumAbsoluteDelta": 0.001,
+      "dispatchMismatchCells": 0,
+      "note": "event deltas are caused only by independently rounding each half-hour to 3 decimals"
+    }
   }
 }

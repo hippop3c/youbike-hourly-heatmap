@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>雙北 YouBike 分時熱力圖 V5版</title>
+  <title>雙北 YouBike 半小時熱力圖 V6版</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#17324d;background:#eef4f7}*{box-sizing:border-box}body{margin:0;overflow-x:hidden}.app{display:grid;grid-template-rows:auto 1fr;height:100vh}.toolbar{position:relative;background:#0b3954;color:#fff;padding:12px 16px;box-shadow:0 2px 8px #0003;z-index:2000}.title-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:10px}.title-row h1{font-size:20px;margin:0;white-space:nowrap;flex:none}.title-right{display:flex;align-items:center;gap:14px;min-width:0}.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(146px,1fr));gap:10px;align-items:end}.control{display:flex;flex-direction:column;gap:4px;position:relative}.control>label{font-size:12px;color:#cdeaf2}.multi summary,.control button,.usage-filter,.toggle-control{height:36px;border:1px solid #8ab7c5;border-radius:6px;background:#fff;color:#17324d;padding:8px 10px;list-style:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.multi summary,.control button{cursor:pointer}.multi summary::-webkit-details-marker{display:none}.multi summary:after{content:'▾';float:right}.multi[open] summary:after{content:'▴'}.options{position:absolute;top:40px;left:0;min-width:220px;max-height:280px;overflow:auto;background:#fff;color:#17324d;border:1px solid #8ab7c5;border-radius:8px;box-shadow:0 6px 20px #0004;padding:8px;z-index:2200}.options label{display:flex;align-items:center;gap:8px;padding:5px;border-radius:4px}.options label:hover{background:#e8f4f5}.option-actions{display:flex;gap:6px;position:sticky;top:-8px;background:#fff;padding:4px 0 7px}.option-actions button{height:28px;padding:2px 8px;border:1px solid #aacbd4;border-radius:4px;background:#eef7f8;color:#17324d}.cat-swatch{display:inline-block;width:11px;height:11px;border-radius:3px;flex:0 0 auto}.hour-wrap{display:flex;align-items:center;gap:8px;height:36px}.hour-wrap input{min-width:80px;width:100%}.hour-value{min-width:52px;font-variant-numeric:tabular-nums;font-weight:700}.play{background:#f4a261!important;border-color:#f4a261!important;font-weight:700}.usage-filter{display:flex;align-items:center;gap:7px;padding:5px 9px}.usage-filter input{width:74px;min-width:0;border:1px solid #b3cbd4;border-radius:4px;padding:4px 6px;color:#17324d;font-weight:700;font-variant-numeric:tabular-nums}.toggle-control{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px}.toggle-control input{position:absolute;opacity:0;pointer-events:none}.toggle-track{position:relative;width:38px;height:20px;border-radius:999px;background:#9aaab2;flex:0 0 auto;transition:.18s}.toggle-track:after{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0004;transition:.18s}.toggle-control input:checked+.toggle-track{background:#1f7a46}.toggle-control input:checked+.toggle-track:after{transform:translateX(18px)}
@@ -18,7 +18,7 @@
   <main class="app">
     <header class="toolbar">
       <div class="title-row">
-        <h1>雙北 YouBike 各站分時動態熱力圖 V5版</h1>
+        <h1>雙北 YouBike 各站半小時動態熱力圖 V6版</h1>
         <div class="title-right">
           <div class="search-box">
             <input id="stationSearch" type="text" placeholder="搜尋站點名稱…" autocomplete="off" aria-label="搜尋站點">
@@ -34,17 +34,17 @@
         <div class="control"><label>指標（可複選）</label><details class="multi"><summary id="metricSummary">滿借、調出／綁車</summary><div class="options" id="metricOptions"></div></details></div>
         <div class="control"><label for="usageThreshold">場站平日日均用量</label><div class="usage-filter"><span>大於</span><input id="usageThreshold" type="number" min="0" max="3000" step="10" value="100" inputmode="numeric"><span>次</span></div></div>
         <div class="control"><label for="matrixColorToggle">圖標配色</label><label class="toggle-control"><input id="matrixColorToggle" type="checkbox" role="switch" checked><span class="toggle-track" aria-hidden="true"></span><span id="matrixColorLabel">套用表格顏色</span></label></div>
-        <div class="control"><label for="hour">小時</label><div class="hour-wrap"><input id="hour" type="range" min="0" max="23" step="1" value="8"><span class="hour-value" id="hourValue">08:00</span></div></div>
-        <div class="control"><label>&nbsp;</label><button class="play" id="play" type="button">▶ 播放 24 小時</button></div>
+        <div class="control"><label for="hour">時段（每30分鐘）</label><div class="hour-wrap"><input id="hour" type="range" min="0" max="47" step="1" value="16"><span class="hour-value" id="hourValue">08:00</span></div></div>
+        <div class="control"><label>&nbsp;</label><button class="play" id="play" type="button">▶ 播放 48 時段</button></div>
       </div>
     </header>
     <section class="map-wrap">
-      <div id="map" role="application" aria-label="雙北 YouBike 分時熱力圖"></div>
-      <aside class="summary"><div id="selectionText"></div><div class="summary-values" id="summaryValues"></div><div class="summary-note" id="summaryNote">交易為筆數；調度為車輛數；見車／見位率為有資料站平均</div></aside>
+      <div id="map" role="application" aria-label="雙北 YouBike 半小時熱力圖"></div>
+      <aside class="summary"><div id="selectionText"></div><div class="summary-values" id="summaryValues"></div><div class="summary-note" id="summaryNote">滿借／空還與調度為半小時；見車／見位率維持每小時</div></aside>
       <aside class="legend"><div class="legend-title" id="legendTitle">熱區強度</div><div id="legendRows"></div></aside>
-      <aside class="matrix-panel" id="matrixPanel" aria-label="V5分時決策矩陣">
+      <aside class="matrix-panel" id="matrixPanel" aria-label="V6半小時決策矩陣">
         <div class="matrix-header">
-          <div class="matrix-title"><strong>V5 分時決策矩陣</strong><span class="matrix-scope" id="matrixScope">載入中</span></div>
+          <div class="matrix-title"><strong>V6 半小時決策矩陣</strong><span class="matrix-scope" id="matrixScope">載入中</span></div>
           <button class="matrix-collapse" id="matrixCollapse" type="button" aria-expanded="true">收合</button>
         </div>
         <div class="matrix-body">
@@ -64,7 +64,7 @@
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-  <script src="data.js?v=20260810-v5"></script>
+  <script src="data.js?v=20260811-v6"></script>
   <script>
   (() => {
     const el=id=>document.getElementById(id), hour=el('hour');
@@ -74,6 +74,17 @@
       return;
     }
     const stations=D.stations, metrics=D.metrics, N=stations.length;
+    const SLOT_COUNT=48, SLOT_MINUTES=30;
+    const timeLabel=slot=>{const minutes=slot*SLOT_MINUTES;return `${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`;};
+    const requiredActivityMetrics=['滿借','空還','調出','綁車','調入','解綁車'];
+    const activityMetrics=Array.isArray(D.activityMetrics)?D.activityMetrics:[];
+    const activityMetricIndexes=activityMetrics.map(metric=>metrics.indexOf(metric));
+    const halfHourlyActivity=D.halfHourlyActivity;
+    const requiredDays=Object.keys(D.values||{}),activityContractValid=activityMetrics.length===requiredActivityMetrics.length&&new Set(activityMetrics).size===requiredActivityMetrics.length&&requiredActivityMetrics.every(metric=>activityMetrics.includes(metric));
+    if(!activityContractValid||!halfHourlyActivity||!requiredDays.every(day=>Array.isArray(halfHourlyActivity[day])&&halfHourlyActivity[day].length===SLOT_COUNT)||activityMetricIndexes.some(index=>index<0)){
+      el('map').innerHTML='<div style="padding:22px 26px;font-size:15px;line-height:1.7;color:#0b3954;max-width:660px;margin:48px auto;background:#fff;border-radius:12px;box-shadow:0 3px 16px #0002"><b style="font-size:17px">⚠️ 半小時資料不完整</b><br>請重新產生並上傳 V6 的 <code>data.js</code>。</div>';
+      return;
+    }
     const dailyUsage=Array.isArray(D.dailyUsage)&&D.dailyUsage.length===N?D.dailyUsage:Array(N).fill(null);
     const stationCapacity=Array.isArray(D.stationCapacity)&&D.stationCapacity.length===N?D.stationCapacity:Array(N).fill(null);
     const enabledStationCapacity=Array.isArray(D.enabledStationCapacity)&&D.enabledStationCapacity.length===N?D.enabledStationCapacity:Array(N).fill(null);
@@ -116,11 +127,15 @@
     const rateLevel=(c,value)=>!Number.isFinite(value)?'missing':value>=c.thresholds.good?'good':value>=c.thresholds.warn?'warn':'bad';
     const rateColor=(c,value)=>RATE_COLORS[rateLevel(c,value)];
 
-    // 每個日別的 station×hour×metrics 值表。
+    // 每個日別的 station×30分鐘×metrics 值表；率值取 slot 所屬的小時。
     const HD={};
     for(const day of Object.keys(D.values)){
-      const H=Array.from({length:N},()=>Array.from({length:24},blankValues));
-      for(let h=0;h<24;h++)for(const r of D.values[day][h])H[r[0]][h]=r.slice(1);
+      const H=Array.from({length:N},()=>Array.from({length:SLOT_COUNT},blankValues));
+      for(let slot=0;slot<SLOT_COUNT;slot++){
+        const hourlyBucket=D.values[day][Math.floor(slot/2)]||[];
+        for(const row of hourlyBucket)for(let i=0;i<metrics.length;i++)if(isRateIndex(i))H[row[0]][slot][i]=row[i+1];
+        for(const row of halfHourlyActivity[day][slot]||[])for(let i=0;i<activityMetricIndexes.length;i++)H[row[0]][slot][activityMetricIndexes[i]]=row[i+1];
+      }
       HD[day]=H;
     }
     const map=L.map('map',{preferCanvas:true}).setView([25.06,121.54],11);
@@ -145,10 +160,10 @@
     function refreshDistricts(){const cities=checked('cityOptions'),box=el('districtOptions'),previous=new Set(checked('districtOptions'));box.innerHTML='';const values=[...new Set(stations.filter(s=>cities.length===0||cities.includes(s[1])).map(s=>s[2]))].sort((a,b)=>a.localeCompare(b,'zh-Hant'));for(const value of values){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.value=value;input.checked=previous.size===0||previous.has(value);input.onchange=render;label.append(input,document.createTextNode(value));box.appendChild(label)}optionActions(box,render);updateLabels()}
     function updateLabels(){const days=checked('dayOptions'),cities=checked('cityOptions'),districts=checked('districtOptions'),sel=checked('metricOptions');setSummary('daySummary',days,'全部日別');setSummary('citySummary',cities,'雙北全部');el('districtSummary').textContent=districts.length===0?'未選擇':districts.length===el('districtOptions').querySelectorAll('input[type=checkbox]').length?'全部行政區':districts.length>3?`${districts.length}區已選`:districts.join('、');setSummary('metricSummary',sel,'全部指標');el('matrixColorLabel').textContent=el('matrixColorToggle').checked?'套用表格顏色':'沿用原圖標';}
     function usageThresholdValue(){const raw=el('usageThreshold').value.trim();if(raw==='')return 100;const value=Number(raw);return Number.isFinite(value)&&value>=0?value:100;}
-    function matrixClassify(x,h=+hour.value){
+    function matrixClassify(x,slot=+hour.value){
       const cfg=MATRIX_CONFIG[matrixSide],H=HD['平日'];
       if(!H||[cfg.event,cfg.action,cfg.rate].some(index=>index<0))return {...MATRIX_STYLES.missing,key:'missing',eventHigh:false,actionHigh:false,rateHigh:null,rate:null};
-      const values=H[x.i][h],eventHigh=Number(values[cfg.event])>=MATRIX_EVENT_T,actionHigh=Number(values[cfg.action])>=MATRIX_ACTION_T,rate=values[cfg.rate];
+      const values=H[x.i][slot],eventHigh=Number(values[cfg.event])>=MATRIX_EVENT_T,actionHigh=Number(values[cfg.action])>=MATRIX_ACTION_T,rate=values[cfg.rate];
       if(!Number.isFinite(rate))return {...MATRIX_STYLES.missing,key:'missing',eventHigh,actionHigh,rateHigh:null,rate:null};
       const rateHigh=rate>=cfg.rateThreshold;
       const key=rateHigh?(eventHigh&&actionHigh?'doubleHigh':eventHigh===actionHigh?'adjust':'maintain'):(actionHigh?'infrastructure':'combined');
@@ -160,22 +175,20 @@
       const legacyWeights={平日:D.meta.weekdayDays||22,假日:D.meta.holidayDays||7};
       const usage=D.meta.usageFrequency||{};
       const rateWeights={平日:usage.weekdayDays||22,假日:usage.holidayDays||6};
-      const legacyTotalDays=days.reduce((a,d)=>a+(legacyWeights[d]||0),0)||1,byStation=new Map();
-      for(const d of days){const bucket=D.values[d],legacyDayCount=legacyWeights[d]||0,rateDayCount=rateWeights[d]||0;if(!bucket)continue;
-        for(const row of bucket[+hour.value]){let target=byStation.get(row[0]);if(!target){target={average:blankValues(),total:blankValues(),rateSum:Array(metrics.length).fill(0),rateWeight:Array(metrics.length).fill(0)};byStation.set(row[0],target)}
-          for(let i=0;i<metrics.length;i++){
-            const value=row[i+1];
-            if(isRateIndex(i)){
-              if(Number.isFinite(value)&&rateDayCount){target.rateSum[i]+=value*rateDayCount;target.rateWeight[i]+=rateDayCount;}
-            }else if(DISPATCH_METRICS.has(metrics[i])){
-              if(Number.isFinite(value)){target.average[i]=Math.max(target.average[i],value);target.total[i]=target.average[i];}
-            }else if(RELAY_METRICS.has(metrics[i])&&legacyDayCount&&Number.isFinite(value)){
-              const total=value*legacyDayCount;target.total[i]+=total;target.average[i]+=total/legacyTotalDays;
-            }else if(Number.isFinite(value)){
-              target.average[i]=value;target.total[i]=value;
-            }
+      const legacyTotalDays=days.reduce((a,d)=>a+(legacyWeights[d]||0),0)||1,byStation=new Map(),slot=+hour.value;
+      const targetFor=stationIndex=>{let target=byStation.get(stationIndex);if(!target){target={average:blankValues(),total:blankValues(),rateSum:Array(metrics.length).fill(0),rateWeight:Array(metrics.length).fill(0)};byStation.set(stationIndex,target)}return target;};
+      for(const d of days){const hourlyBucket=D.values[d]?.[Math.floor(slot/2)]||[],activityBucket=halfHourlyActivity[d]?.[slot]||[],legacyDayCount=legacyWeights[d]||0,rateDayCount=rateWeights[d]||0;
+        for(const row of hourlyBucket){const target=targetFor(row[0]);for(let i=0;i<metrics.length;i++)if(isRateIndex(i)){const value=row[i+1];if(Number.isFinite(value)&&rateDayCount){target.rateSum[i]+=value*rateDayCount;target.rateWeight[i]+=rateDayCount;}}}
+        for(const row of activityBucket){const target=targetFor(row[0]);for(let sourceIndex=0;sourceIndex<activityMetricIndexes.length;sourceIndex++){
+          const i=activityMetricIndexes[sourceIndex],value=row[sourceIndex+1];
+          if(DISPATCH_METRICS.has(metrics[i])){
+            if(Number.isFinite(value)){target.average[i]=Math.max(target.average[i],value);target.total[i]=target.average[i];}
+          }else if(RELAY_METRICS.has(metrics[i])&&legacyDayCount&&Number.isFinite(value)){
+            const total=value*legacyDayCount;target.total[i]+=total;target.average[i]+=total/legacyTotalDays;
+          }else if(Number.isFinite(value)){
+            target.average[i]=value;target.total[i]=value;
           }
-        }
+        }}
       }
       for(const target of byStation.values())for(let i=0;i<metrics.length;i++)if(isRateIndex(i)){
         target.average[i]=target.rateWeight[i]?target.rateSum[i]/target.rateWeight[i]:null;
@@ -187,7 +200,7 @@
     const catVal=(vals,c)=>{const present=c.idx.map(i=>vals[i]).filter(Number.isFinite);return c.kind==='rate'?(present.length?present.reduce((a,v)=>a+v,0)/present.length:null):present.reduce((a,v)=>a+v,0)};
     const visualStrength=(value,max)=>max?Math.sqrt(Math.min(1,value/max)):0;
 
-    function renderMatrix(rows,h){
+    function renderMatrix(rows,slot){
       const cfg=MATRIX_CONFIG[matrixSide],H=HD['平日'];
       if(!H||[cfg.event,cfg.action,cfg.rate].some(i=>i<0)){
         el('matrixRows').innerHTML='<tr><td colspan="4" style="text-align:center;color:#a33">矩陣需要平日滿借／空還、綁車／解綁車與見車／見位率資料。</td></tr>';
@@ -195,7 +208,7 @@
       }
       const counts=Array.from({length:4},()=>[0,0]),missing=0,byStyle={doubleHigh:0,adjust:0,maintain:0,infrastructure:0,combined:0,missing:0};
       for(const x of rows){
-        const result=matrixClassify(x,h);
+        const result=matrixClassify(x,slot);
         if(result.key==='missing'){missing++;byStyle.missing++;continue;}
         const row=(result.eventHigh?0:2)+(result.rateHigh?0:1),column=result.actionHigh?0:1;
         counts[row][column]++;byStyle[result.key]++;
@@ -219,33 +232,33 @@
       const cities=checked('cityOptions'),districts=checked('districtOptions'),districtTotal=el('districtOptions').querySelectorAll('input[type=checkbox]').length;
       const cityText=cities.length===1?cities[0]:'雙北',districtText=districts.length===0||districts.length===districtTotal?'全部行政區':districts.length===1?districts[0]:`${districts.length}區`;
       const threshold=usageThresholdValue();
-      el('matrixScope').textContent=`${cityText}・${districtText}・${String(h).padStart(2,'0')}:00・日均>${threshold}・${fmt(total)}站`;
-      const panel=el('matrixPanel');panel.dataset.hour=String(h);panel.dataset.side=matrixSide;panel.dataset.valid=String(valid);panel.dataset.missing=String(missing);panel.dataset.total=String(total);panel.dataset.check=String(check);panel.dataset.threshold=String(threshold);
+      el('matrixScope').textContent=`${cityText}・${districtText}・${timeLabel(slot)}・日均>${threshold}・${fmt(total)}站`;
+      const panel=el('matrixPanel');panel.dataset.slot=String(slot);panel.dataset.time=timeLabel(slot);panel.dataset.hour=String(Math.floor(slot/2));panel.dataset.side=matrixSide;panel.dataset.valid=String(valid);panel.dataset.missing=String(missing);panel.dataset.total=String(total);panel.dataset.check=String(check);panel.dataset.threshold=String(threshold);
       return {byStyle,valid,missing,total,check};
     }
 
     function render(){
       updateLabels();
       const days=checked('dayOptions'),cities=checked('cityOptions'),districts=checked('districtOptions'),selKeys=checked('metricOptions');
-      const selCats=CATS.filter(c=>selKeys.includes(c.key)),lookup=combinedRows(),h=+hour.value;
+      const selCats=CATS.filter(c=>selKeys.includes(c.key)),lookup=combinedRows(),slot=+hour.value;
       const threshold=usageThresholdValue(),useMatrixColors=el('matrixColorToggle').checked;
       const inFilter=s=>(cities.length===0||cities.includes(s[1]))&&(districts.length===0||districts.includes(s[2]));
       const rows=stations.map((s,i)=>{const data=lookup.get(i)||{average:blankValues(),total:blankValues()},cat={};for(const c of CATS)cat[c.key]=catVal(c.kind==='relay'?data.total:data.average,c);return{s,i,dailyUsage:dailyUsage[i],capacity:stationCapacity[i],enabledCapacity:enabledStationCapacity[i],vals:data.average,totals:data.total,cat};}).filter(x=>inFilter(x.s)&&Number.isFinite(x.dailyUsage)&&x.dailyUsage>threshold);
-      const matrixSummary=renderMatrix(rows,h);
+      const matrixSummary=renderMatrix(rows,slot);
       // 事件與調度保留熱區；率值只用紅黃綠站點圈，避免熱度漸層與達標顏色混淆。
       for(const c of CATS){if(!useMatrixColors&&selKeys.includes(c.key)){c._max=percentile(rows.map(x=>x.cat[c.key]));c.layer.setLatLngs(c.kind==='rate'?[]:rows.filter(x=>Number.isFinite(x.cat[c.key])&&x.cat[c.key]>0).map(x=>[x.s[3],x.s[4],visualStrength(x.cat[c.key],c._max)]));}else{c._max=0;c.layer.setLatLngs([]);}}
       neutralMarkers.clearLayers();dispatchMarkers.clearLayers();relayMarkers.clearLayers();rateMarkers.clearLayers();matrixMarkers.clearLayers();
 
       if(useMatrixColors){
-        for(const x of rows){const result=matrixClassify(x,h);L.circleMarker([x.s[3],x.s[4]],{pane:'matrixPane',radius:9,color:'#0b3954',weight:1.35,fillColor:result.color,fillOpacity:.9}).bindPopup(popup(x),popupOptions()).addTo(matrixMarkers);}
-        el('summaryNote').textContent='各顏色場站數與左側表格同步，拖動小時會即時重算';
+        for(const x of rows){const result=matrixClassify(x,slot);L.circleMarker([x.s[3],x.s[4]],{pane:'matrixPane',radius:9,color:'#0b3954',weight:1.35,fillColor:result.color,fillOpacity:.9}).bindPopup(popup(x),popupOptions()).addTo(matrixMarkers);}
+        el('summaryNote').textContent='各顏色場站數與左側表格同步，拖動半小時時段會即時重算';
         const sv=el('summaryValues');sv.innerHTML='';
         for(const key of ['doubleHigh','adjust','maintain','infrastructure','combined','missing']){const style=MATRIX_STYLES[key],count=matrixSummary.byStyle[key]||0,label=style.summaryLabel||style.label;sv.insertAdjacentHTML('beforeend',`<span class="cat-swatch" style="background:${style.color}"></span><span>${label}</span><span class="v" style="color:${style.color}">${count.toLocaleString()}</span>`);}
         el('legendTitle').textContent='表格判定顏色';
         const lr=el('legendRows');lr.innerHTML='';
         for(const key of ['doubleHigh','adjust','maintain','infrastructure','combined','missing']){const style=MATRIX_STYLES[key],label=style.summaryLabel||style.label;lr.insertAdjacentHTML('beforeend',`<div class="legend-row case"><span class="cat-swatch" style="background:${style.color}"></span><span>${label}</span></div>`);}
         lr.insertAdjacentHTML('beforeend',`<div class="legend-empty">以平日的${MATRIX_CONFIG[matrixSide].eventLabel}、${MATRIX_CONFIG[matrixSide].actionLabel}與${MATRIX_CONFIG[matrixSide].rateLabel}判定；關閉配色開關即回復原熱區圖標。</div>`);
-        el('selectionText').innerHTML=`<b class="case-summary">表格平日判定｜${String(h).padStart(2,'0')}時</b><br>日均>${threshold}次・${rows.length.toLocaleString()}站`;
+        el('selectionText').innerHTML=`<b class="case-summary">表格平日判定｜${timeLabel(slot)}</b><br>日均>${threshold}次・${rows.length.toLocaleString()}站`;
       }else{
         // 每個已選指標各自保留圖標；見車率為外圈，見位率為較小虛線內圈，顏色代表門檻。
         for(const x of rows){let visible=false;
@@ -259,7 +272,7 @@
           if(!visible)L.circleMarker([x.s[3],x.s[4]],{pane:'neutralPane',radius:2.5,color:'#708894',weight:1,fillOpacity:.15}).bindPopup(popup(x),popupOptions()).addTo(neutralMarkers);
         }
         const hasRate=selCats.some(c=>c.kind==='rate'),hasHeat=selCats.some(c=>c.kind!=='rate');
-        el('summaryNote').textContent=hasRate?(hasHeat?'交易為筆數；調度為車輛數；率值為有資料站平均，地圖顏色依各站門檻':'率值為有資料站平均；地圖顏色依各站門檻'):'交易為筆數；調度為車輛數';
+        el('summaryNote').textContent=hasRate?(hasHeat?'滿借／空還與調度為半小時；見車／見位率維持每小時':'見車／見位率維持每小時，同小時的 :00／:30 相同'):'滿借／空還與調度為半小時';
         const sv=el('summaryValues');sv.innerHTML='';
         if(selCats.length===0)sv.innerHTML='<span style="grid-column:1/4;color:#5b7280">未選擇指標</span>';
         else for(const c of selCats){const values=rows.map(x=>x.cat[c.key]).filter(Number.isFinite),avg=values.length?values.reduce((a,v)=>a+v,0)/values.length:null,shown=c.kind==='rate'?(Number.isFinite(avg)?`${avg.toFixed(1)}%`:'—'):Math.round(values.reduce((a,v)=>a+v,0)).toLocaleString(),color=c.kind==='rate'?'#17324d':c.ring,fill=c.kind==='rate'?RATE_GRADIENT:c.fill,label=c.kind==='rate'?`${c.key}平均`:c.key;sv.insertAdjacentHTML('beforeend',`<span class="cat-swatch" style="background:${fill}"></span><span>${label}</span><span class="v" style="color:${color}">${shown}</span>`);}
@@ -267,21 +280,21 @@
         const lr=el('legendRows');lr.innerHTML='';
         if(selCats.length===0)lr.innerHTML='<div class="legend-empty">未選擇指標</div>';
         else for(const c of selCats){if(c.kind==='rate'){lr.insertAdjacentHTML('beforeend',`<div class="rate-legend"><div class="rate-legend-title"><span class="rate-legend-symbol">${c.key==='見車率'?'◉':'◌'}</span>${c.key}（${c.shape}）</div><div class="rate-bands"><span class="rate-band" style="background:${RATE_COLORS.bad}">紅 &lt;${c.thresholds.warn}%</span><span class="rate-band" style="background:${RATE_COLORS.warn}">黃 ${c.thresholds.warn}–&lt;${c.thresholds.good}%</span><span class="rate-band" style="background:${RATE_COLORS.good}">綠 ≥${c.thresholds.good}%</span><span class="rate-band missing">灰 無資料</span></div></div>`);}else{const shown=Math.round(c._max||0).toLocaleString();lr.insertAdjacentHTML('beforeend',`<div class="legend-row"><span class="cat-swatch" style="background:${c.fill}"></span><span>${c.key}</span><div class="gradient" style="background:${c.gcss}"></div><span>${shown}</span></div>`);}}
-        el('selectionText').textContent=`${days.join('+')||'未選日別'}・${String(h).padStart(2,'0')}時・日均>${threshold}・${rows.length.toLocaleString()}站`;
+        el('selectionText').textContent=`${days.join('+')||'未選日別'}・${timeLabel(slot)}・日均>${threshold}・${rows.length.toLocaleString()}站`;
       }
-      el('hourValue').textContent=String(h).padStart(2,'0')+':00';
+      el('hourValue').textContent=timeLabel(slot);
     }
 
     function popup(x){
-      const rowsHtml=metrics.map((m,i)=>{const relay=m==='滿借'||m==='空還',rate=isRateIndex(i),raw=x.vals[i],value=rate?(Number.isFinite(raw)?`${raw.toFixed(1)}%`:'—'):relay?Math.ceil(Number.isFinite(raw)?raw:0).toLocaleString('zh-TW'):Math.round(Number.isFinite(raw)?raw:0).toLocaleString(),label=relay?`${m}日均`:m,unit=rate?'':relay?'（筆／日）':'（輛）',cat=rate?CATS.find(c=>c.key===m):null,color=rate?rateColor(cat,raw):'';return `<span>${label}${unit}</span><span${rate?` class="popup-rate" style="color:${color}"`:''}>${value}</span>`}).join('');
-      const catHtml=CATS.map(c=>{const relay=c.kind==='relay',value=relay?catVal(x.vals,c):(x.cat?.[c.key]??catVal(x.vals,c)),shown=c.kind==='rate'?(Number.isFinite(value)?`${value.toFixed(1)}%`:'—'):relay?`${Math.ceil(Number.isFinite(value)?value:0).toLocaleString('zh-TW')}筆／日`:`${Math.round(Number.isFinite(value)?value:0).toLocaleString()}輛`,label=relay?`${c.key}日均`:c.key,style=c.kind==='rate'?` style="color:${rateColor(c,value)};font-weight:700"`:'';return `<span${style}>${label} ${shown}</span>`}).join('　');
+      const rowsHtml=metrics.map((m,i)=>{const relay=m==='滿借'||m==='空還',rate=isRateIndex(i),raw=x.vals[i],value=rate?(Number.isFinite(raw)?`${raw.toFixed(1)}%`:'—'):relay?Math.ceil(Number.isFinite(raw)?raw:0).toLocaleString('zh-TW'):Math.round(Number.isFinite(raw)?raw:0).toLocaleString(),label=relay?`${m}半小時日均`:m,unit=rate?'':relay?'（筆／日）':'（輛）',cat=rate?CATS.find(c=>c.key===m):null,color=rate?rateColor(cat,raw):'';return `<span>${label}${unit}</span><span${rate?` class="popup-rate" style="color:${color}"`:''}>${value}</span>`}).join('');
+      const catHtml=CATS.map(c=>{const relay=c.kind==='relay',value=relay?catVal(x.vals,c):(x.cat?.[c.key]??catVal(x.vals,c)),shown=c.kind==='rate'?(Number.isFinite(value)?`${value.toFixed(1)}%`:'—'):relay?`${Math.ceil(Number.isFinite(value)?value:0).toLocaleString('zh-TW')}筆／日`:`${Math.round(Number.isFinite(value)?value:0).toLocaleString()}輛`,label=relay?`${c.key}半小時日均`:c.key,style=c.kind==='rate'?` style="color:${rateColor(c,value)};font-weight:700"`:'';return `<span${style}>${label} ${shown}</span>`}).join('　');
       const capacityValue=Number.isFinite(x.capacity)?`${Math.round(x.capacity).toLocaleString('zh-TW')}格`:'—';
       const enabledNote=Number.isFinite(x.enabledCapacity)&&x.enabledCapacity!==x.capacity?` <small style="color:#5b7280">（啟用 ${Math.round(x.enabledCapacity).toLocaleString('zh-TW')}）</small>`:'';
       const capacityHtml=`<div>車位數：<b>${capacityValue}</b>${enabledNote}</div>`;
       const usageHtml=`<div>場站平日日均用量：<b>${Number.isFinite(x.dailyUsage)?x.dailyUsage.toLocaleString('zh-TW',{maximumFractionDigits:2}):'—'}次</b></div>`;
       let matrixHtml='';
       if(el('matrixColorToggle').checked){const result=matrixClassify(x);const textColor=result.key==='maintain'?'#17324d':'#fff';matrixHtml=`<div class="popup-cases">表格判定：<b style="background:${result.color};color:${textColor}">${result.label}</b></div>`;}
-      return `<div class="popup-title">${x.s[0]}</div><div>${x.s[1]}・${x.s[2]}・${String(+hour.value).padStart(2,'0')}:00</div>${capacityHtml}${usageHtml}<div class="popup-grid">${rowsHtml}</div><div class="popup-cat">${catHtml}</div>${matrixHtml}`;
+      return `<div class="popup-title">${x.s[0]}</div><div>${x.s[1]}・${x.s[2]}・${timeLabel(+hour.value)}</div>${capacityHtml}${usageHtml}<div class="popup-grid">${rowsHtml}</div><div class="popup-cat">${catHtml}</div>${matrixHtml}`;
     }
 
     // ── 站點搜尋：飛到該站並高亮（點擊高亮圈看資訊卡）──
@@ -311,8 +324,8 @@
     el('usageThreshold').addEventListener('input',render);
     el('usageThreshold').addEventListener('change',render);
     el('matrixColorToggle').addEventListener('change',render);
-    el('play').addEventListener('click',()=>{if(timer){stop();return}el('play').textContent='❚❚ 暫停';timer=setInterval(()=>{hour.value=(+hour.value+1)%24;render()},900)});
-    function stop(){if(timer){clearInterval(timer);timer=null;el('play').textContent='▶ 播放 24 小時'}}
+    el('play').addEventListener('click',()=>{if(timer){stop();return}el('play').textContent='❚❚ 暫停';timer=setInterval(()=>{hour.value=(+hour.value+1)%SLOT_COUNT;render()},900)});
+    function stop(){if(timer){clearInterval(timer);timer=null;el('play').textContent='▶ 播放 48 時段'}}
 
     refreshDistricts();render();
     setTimeout(()=>map.invalidateSize(),0);

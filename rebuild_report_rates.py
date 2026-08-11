@@ -846,6 +846,10 @@ def main() -> None:
         "legacy": legacy_summary,
         "usageFrequency": usage_frequency,
     }
+    if isinstance(existing_summary, dict):
+        for key, value in existing_summary.items():
+            if key not in {"legacy", "usageFrequency", "rateData"}:
+                summary[key] = value
 
     mapping_output = {
         "period": args.period,
